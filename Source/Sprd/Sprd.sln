@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SprdCore", "SprdCore\SprdCore.csproj", "{209D2C2B-9DA4-4686-B34E-07762FC0F144}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger", "Cardano-Wallet\IO.Swagger.csproj", "{3EF5A9A0-C410-4CE7-9FBC-8322892C36B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sprd.UI", "Sprd.UI\Sprd.UI.csproj", "{2C50E586-DC89-4797-ADC4-D2C1CC3FCDCA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{209D2C2B-9DA4-4686-B34E-07762FC0F144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{209D2C2B-9DA4-4686-B34E-07762FC0F144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{209D2C2B-9DA4-4686-B34E-07762FC0F144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{209D2C2B-9DA4-4686-B34E-07762FC0F144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EF5A9A0-C410-4CE7-9FBC-8322892C36B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF5A9A0-C410-4CE7-9FBC-8322892C36B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF5A9A0-C410-4CE7-9FBC-8322892C36B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF5A9A0-C410-4CE7-9FBC-8322892C36B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C50E586-DC89-4797-ADC4-D2C1CC3FCDCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C50E586-DC89-4797-ADC4-D2C1CC3FCDCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C50E586-DC89-4797-ADC4-D2C1CC3FCDCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C50E586-DC89-4797-ADC4-D2C1CC3FCDCA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {247C6F93-C48F-4F70-ADA9-FB578CAC19B1}
+	EndGlobalSection
+EndGlobal
