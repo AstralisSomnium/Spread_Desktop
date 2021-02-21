@@ -18,3 +18,5 @@ $walletExe = "C:\Program Files\Daedalus Mainnet\cardano-wallet.exe"
 #  Port 52800
 # Node socket \\.\pipe\cardano-node-mainnet
 # Wallet databases: Using directory: C:\Users\grube\AppData\Roaming\Daedalus Mainnet\wallets
+
+
