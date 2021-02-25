@@ -96,9 +96,9 @@
                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                         <ColumnDefinition Width="*"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding PoolName}"></TextBlock>
-                                    <TextBox Text="{Binding LifetimeBlocks}" Grid.Column="1"></TextBox>
-                                    <TextBox Text="{Binding ActiveStake}" Grid.Column="2"></TextBox>
+                                    <TextBlock Text="{Binding Metadata.Name}"></TextBlock>
+                                    <TextBox Text="{Binding Metrics.ProducedBlocks.Quantity}" Grid.Column="1"></TextBox>
+                                    <TextBox Text="{Binding Metrics.RelativeStake.Quantity}" Grid.Column="2"></TextBox>
                                     <TextBox Text="{Binding BlockChance}" Grid.Column="3"></TextBox>
                                     <TextBox Text="{Binding SprdStake}" Grid.Column="4"></TextBox>
                                     <TextBox Text="{Binding RegistredDate}" Grid.Column="5"></TextBox>

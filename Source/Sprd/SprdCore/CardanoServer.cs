@@ -10,23 +10,16 @@ using SprdCore.Annotations;
 
 namespace SprdCore
 {
-    public class CardanoServer : INotifyPropertyChanged, IDisposable
+    public class CardanoServer : WalletBase, INotifyPropertyChanged
     {
-        Process _cardanoNodeProcess;
-        private const string DaedalusInstallPath = "C:\\Program Files\\Daedalus Mainnet\\";
-
-        public CardanoServer()
+        public Process Start(int port)
         {
-        }
-
-        public Process Start()
-        {
-            var startWithDaedalus = StartWithDaedalus();
+            var startWithDaedalus = StartWithDaedalus(port);
 
             return startWithDaedalus;
         }
 
-        Process StartWithDaedalus()
+        Process StartWithDaedalus(int port)
         {
             Log.Verbose("Searching Daedalus installation...");
             var DaedalusExePath = new FileInfo(string.Format("{0}cardano-launcher.exe", DaedalusInstallPath));
@@ -66,7 +59,7 @@ namespace SprdCore
 
             var arguments = new[]
             {
-                "--port " + 41799,
+                "--port " + port,
                 "--database " + daedaelusWalletPath,
                 "--sync-tolerance 300s",
                 "--mainnet",
@@ -75,23 +68,7 @@ namespace SprdCore
             var startArguments = string.Format("serve {0}", string.Join(" ", arguments));
             return ExecuteWalletCommand(startArguments);
         }
-
-        Process ExecuteWalletCommand(string command)
-        {
-            var daedaelusWalletFile = new FileInfo(string.Format(@"{0}cardano-wallet.exe", DaedalusInstallPath));
-            var daedaelusWalletExe = string.Format(@"{0}'", daedaelusWalletFile.FullName);
-            return ExecuteCommand(daedaelusWalletFile, command);
-        }
-
-        Process ExecuteCommand(FileInfo file, string command)
-        {
-            _cardanoNodeProcess = new Process();
-            var psi = new ProcessStartInfo {FileName = file.FullName, Arguments = command};
-            _cardanoNodeProcess.StartInfo = psi;
-            _cardanoNodeProcess.Start();
-            return _cardanoNodeProcess;
-        }
-
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -99,11 +76,6 @@ namespace SprdCore
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public void Dispose()
-        {
-            _cardanoNodeProcess.Kill();
         }
     }
 }

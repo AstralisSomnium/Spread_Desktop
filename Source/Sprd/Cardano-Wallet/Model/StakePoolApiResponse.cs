@@ -24,10 +24,10 @@ using SwaggerDateConverter = IO.Swagger.Client.SwaggerDateConverter;
 namespace IO.Swagger.Model
 {
     /// <summary>
-    /// InlineResponse2006
+    /// StakePoolApiResponse
     /// </summary>
     [DataContract]
-        public partial class InlineResponse2006 :  IEquatable<InlineResponse2006>, IValidatableObject
+        public partial class StakePoolApiResponse :  IEquatable<StakePoolApiResponse>, IValidatableObject
     {
         /// <summary>
         /// Defines Flags
@@ -47,7 +47,7 @@ namespace IO.Swagger.Model
         [DataMember(Name="flags", EmitDefaultValue=false)]
         public List<FlagsEnum> Flags { get; set; }
         /// <summary>
-        /// Initializes a new instance of the <see cref="InlineResponse2006" /> class.
+        /// Initializes a new instance of the <see cref="StakePoolApiResponse" /> class.
         /// </summary>
         /// <param name="id">A unique identifier for the pool. (required).</param>
         /// <param name="metrics">metrics (required).</param>
@@ -57,12 +57,12 @@ namespace IO.Swagger.Model
         /// <param name="metadata">metadata.</param>
         /// <param name="retirement">retirement.</param>
         /// <param name="flags">Various flags applicable to stake pools. Possible flags:  | flag     | description                                                                                                      | | - --      | - --                                                                                                              | | delisted | The pool is marked as delisted on a configured SMASH server; metadata for this pool have therefore been dropped. |  (required).</param>
-        public InlineResponse2006(string id = default(string), StakepoolsMetrics metrics = default(StakepoolsMetrics), StakepoolsCost cost = default(StakepoolsCost), StakepoolsMargin margin = default(StakepoolsMargin), StakepoolsPledge pledge = default(StakepoolsPledge), StakepoolsMetadata metadata = default(StakepoolsMetadata), StakepoolsRetirement retirement = default(StakepoolsRetirement), List<FlagsEnum> flags = default(List<FlagsEnum>))
+        public StakePoolApiResponse(string id = default(string), StakepoolsMetrics metrics = default(StakepoolsMetrics), StakepoolsCost cost = default(StakepoolsCost), StakepoolsMargin margin = default(StakepoolsMargin), StakepoolsPledge pledge = default(StakepoolsPledge), StakepoolsMetadata metadata = default(StakepoolsMetadata), StakepoolsRetirement retirement = default(StakepoolsRetirement), List<FlagsEnum> flags = default(List<FlagsEnum>))
         {
             // to ensure "id" is required (not null)
             if (id == null)
             {
-                throw new InvalidDataException("id is a required property for InlineResponse2006 and cannot be null");
+                throw new InvalidDataException("id is a required property for StakePoolApiResponse and cannot be null");
             }
             else
             {
@@ -71,7 +71,7 @@ namespace IO.Swagger.Model
             // to ensure "metrics" is required (not null)
             if (metrics == null)
             {
-                throw new InvalidDataException("metrics is a required property for InlineResponse2006 and cannot be null");
+                throw new InvalidDataException("metrics is a required property for StakePoolApiResponse and cannot be null");
             }
             else
             {
@@ -80,7 +80,7 @@ namespace IO.Swagger.Model
             // to ensure "cost" is required (not null)
             if (cost == null)
             {
-                throw new InvalidDataException("cost is a required property for InlineResponse2006 and cannot be null");
+                throw new InvalidDataException("cost is a required property for StakePoolApiResponse and cannot be null");
             }
             else
             {
@@ -89,7 +89,7 @@ namespace IO.Swagger.Model
             // to ensure "margin" is required (not null)
             if (margin == null)
             {
-                throw new InvalidDataException("margin is a required property for InlineResponse2006 and cannot be null");
+                throw new InvalidDataException("margin is a required property for StakePoolApiResponse and cannot be null");
             }
             else
             {
@@ -98,7 +98,7 @@ namespace IO.Swagger.Model
             // to ensure "pledge" is required (not null)
             if (pledge == null)
             {
-                throw new InvalidDataException("pledge is a required property for InlineResponse2006 and cannot be null");
+                throw new InvalidDataException("pledge is a required property for StakePoolApiResponse and cannot be null");
             }
             else
             {
@@ -107,7 +107,7 @@ namespace IO.Swagger.Model
             // to ensure "flags" is required (not null)
             if (flags == null)
             {
-                throw new InvalidDataException("flags is a required property for InlineResponse2006 and cannot be null");
+                throw new InvalidDataException("flags is a required property for StakePoolApiResponse and cannot be null");
             }
             else
             {
@@ -168,7 +168,7 @@ namespace IO.Swagger.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class InlineResponse2006 {\n");
+            sb.Append("class StakePoolApiResponse {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Metrics: ").Append(Metrics).Append("\n");
             sb.Append("  Cost: ").Append(Cost).Append("\n");
@@ -197,15 +197,15 @@ namespace IO.Swagger.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object input)
         {
-            return this.Equals(input as InlineResponse2006);
+            return this.Equals(input as StakePoolApiResponse);
         }
 
         /// <summary>
-        /// Returns true if InlineResponse2006 instances are equal
+        /// Returns true if StakePoolApiResponse instances are equal
         /// </summary>
-        /// <param name="input">Instance of InlineResponse2006 to be compared</param>
+        /// <param name="input">Instance of StakePoolApiResponse to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(InlineResponse2006 input)
+        public bool Equals(StakePoolApiResponse input)
         {
             if (input == null)
                 return false;

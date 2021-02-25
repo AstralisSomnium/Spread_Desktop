@@ -96,8 +96,8 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>List&lt;InlineResponse2006&gt;</returns>
-        List<InlineResponse2006> ListStakePools (int? stake);
+        /// <returns>List&lt;StakePoolApiResponse&gt;</returns>
+        List<StakePoolApiResponse> ListStakePools (int? stake);
 
         /// <summary>
         /// List
@@ -107,8 +107,8 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>ApiResponse of List&lt;InlineResponse2006&gt;</returns>
-        ApiResponse<List<InlineResponse2006>> ListStakePoolsWithHttpInfo (int? stake);
+        /// <returns>ApiResponse of List&lt;StakePoolApiResponse&gt;</returns>
+        ApiResponse<List<StakePoolApiResponse>> ListStakePoolsWithHttpInfo (int? stake);
         /// <summary>
         /// Trigger Maintenance actions
         /// </summary>
@@ -228,8 +228,8 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>Task of List&lt;InlineResponse2006&gt;</returns>
-        System.Threading.Tasks.Task<List<InlineResponse2006>> ListStakePoolsAsync (int? stake);
+        /// <returns>Task of List&lt;StakePoolApiResponse&gt;</returns>
+        System.Threading.Tasks.Task<List<StakePoolApiResponse>> ListStakePoolsAsync (int? stake);
 
         /// <summary>
         /// List
@@ -239,8 +239,8 @@ namespace IO.Swagger.Api
         /// </remarks>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>Task of ApiResponse (List&lt;InlineResponse2006&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<InlineResponse2006>>> ListStakePoolsAsyncWithHttpInfo (int? stake);
+        /// <returns>Task of ApiResponse (List&lt;StakePoolApiResponse&gt;)</returns>
+        System.Threading.Tasks.Task<ApiResponse<List<StakePoolApiResponse>>> ListStakePoolsAsyncWithHttpInfo (int? stake);
         /// <summary>
         /// Trigger Maintenance actions
         /// </summary>
@@ -822,10 +822,10 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>List&lt;InlineResponse2006&gt;</returns>
-        public List<InlineResponse2006> ListStakePools (int? stake)
+        /// <returns>List&lt;StakePoolApiResponse&gt;</returns>
+        public List<StakePoolApiResponse> ListStakePools (int? stake)
         {
-             ApiResponse<List<InlineResponse2006>> localVarResponse = ListStakePoolsWithHttpInfo(stake);
+             ApiResponse<List<StakePoolApiResponse>> localVarResponse = ListStakePoolsWithHttpInfo(stake);
              return localVarResponse.Data;
         }
 
@@ -834,8 +834,8 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>ApiResponse of List&lt;InlineResponse2006&gt;</returns>
-        public ApiResponse< List<InlineResponse2006> > ListStakePoolsWithHttpInfo (int? stake)
+        /// <returns>ApiResponse of List&lt;StakePoolApiResponse&gt;</returns>
+        public ApiResponse< List<StakePoolApiResponse> > ListStakePoolsWithHttpInfo (int? stake)
         {
             // verify the required parameter 'stake' is set
             if (stake == null)
@@ -877,9 +877,9 @@ namespace IO.Swagger.Api
                 if (exception != null) throw exception;
             }
 
-            return new ApiResponse<List<InlineResponse2006>>(localVarStatusCode,
+            return new ApiResponse<List<StakePoolApiResponse>>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => string.Join(",", x.Value)),
-                (List<InlineResponse2006>) this.Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<InlineResponse2006>)));
+                (List<StakePoolApiResponse>) this.Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<StakePoolApiResponse>)));
         }
 
         /// <summary>
@@ -887,10 +887,10 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>Task of List&lt;InlineResponse2006&gt;</returns>
-        public async System.Threading.Tasks.Task<List<InlineResponse2006>> ListStakePoolsAsync (int? stake)
+        /// <returns>Task of List&lt;StakePoolApiResponse&gt;</returns>
+        public async System.Threading.Tasks.Task<List<StakePoolApiResponse>> ListStakePoolsAsync (int? stake)
         {
-             ApiResponse<List<InlineResponse2006>> localVarResponse = await ListStakePoolsAsyncWithHttpInfo(stake);
+             ApiResponse<List<StakePoolApiResponse>> localVarResponse = await ListStakePoolsAsyncWithHttpInfo(stake);
              return localVarResponse.Data;
 
         }
@@ -900,8 +900,8 @@ namespace IO.Swagger.Api
         /// </summary>
         /// <exception cref="IO.Swagger.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="stake">The stake the user intends to delegate in Lovelace. Required. </param>
-        /// <returns>Task of ApiResponse (List&lt;InlineResponse2006&gt;)</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<List<InlineResponse2006>>> ListStakePoolsAsyncWithHttpInfo (int? stake)
+        /// <returns>Task of ApiResponse (List&lt;StakePoolApiResponse&gt;)</returns>
+        public async System.Threading.Tasks.Task<ApiResponse<List<StakePoolApiResponse>>> ListStakePoolsAsyncWithHttpInfo (int? stake)
         {
             // verify the required parameter 'stake' is set
             if (stake == null)
@@ -943,9 +943,9 @@ namespace IO.Swagger.Api
                 if (exception != null) throw exception;
             }
 
-            return new ApiResponse<List<InlineResponse2006>>(localVarStatusCode,
+            return new ApiResponse<List<StakePoolApiResponse>>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => string.Join(",", x.Value)),
-                (List<InlineResponse2006>) this.Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<InlineResponse2006>)));
+                (List<StakePoolApiResponse>) this.Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<StakePoolApiResponse>)));
         }
 
         /// <summary>

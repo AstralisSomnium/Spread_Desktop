@@ -2,8 +2,12 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using IO.Swagger.Api;
+using IO.Swagger.Model;
 using SprdCore;
 
 namespace Sprd.UI.ViewModels
@@ -12,22 +16,15 @@ namespace Sprd.UI.ViewModels
     {
         readonly Window _desktopMainWindow;
 
+        private readonly int _nodePort = 41799;
         readonly CardanoServer _cardanoServer;
+        readonly WalletClient _walletClient;
 
-        public ObservableCollection<StakePool> AllTimeZeroBlocksPools
+        private IObservable<StakePoolApiResponse> _allTimeZeroBlocksPools;
+        public IObservable<StakePoolApiResponse> AllTimeZeroBlocksPools
         {
-            get { return new ObservableCollection<StakePool>
-            {
-                new StakePool
-                {
-                    PoolName = "SPRD",
-                    ActiveStake = 10000,
-                    BlockChance = 1,
-                    LifetimeBlocks = 0,
-                    RegistredDate = DateTime.Now,
-                    SprdStake = 100000
-                }
-            }; }
+            get { return _allTimeZeroBlocksPools; 
+        }
         }
 
         public MainWindowViewModel()
@@ -37,7 +34,9 @@ namespace Sprd.UI.ViewModels
         public MainWindowViewModel(Window desktopMainWindow)
         {
             _desktopMainWindow = desktopMainWindow;
+            
             _cardanoServer = new CardanoServer();
+            _walletClient = new WalletClient(_nodePort);
             desktopMainWindow.Opened += StartCardanoServer;
             desktopMainWindow.Closing += WindowClosing;
         }
@@ -51,7 +50,17 @@ namespace Sprd.UI.ViewModels
         {
             //DoTheThing = ReactiveCommand.Create<string>(RunTheThing);
 
-            var cardanoServerConsoleProcess = _cardanoServer.Start();
+            var result = StartServerAsync();
+
+        }
+
+        async Task<bool> StartServerAsync()
+        {
+            var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
+
+            var test = await _walletClient.GetAllPools();
+            _allTimeZeroBlocksPools = test.ToObservable();
+            return true;
         }
 
         public void Dispose()
@@ -60,13 +69,4 @@ namespace Sprd.UI.ViewModels
         }
     }
 
-    public class StakePool
-    {
-        public string PoolName { get; set; }
-        public int LifetimeBlocks { get; set; }
-        public double ActiveStake { get; set; }
-        public double BlockChance { get; set; }
-        public double SprdStake { get; set; }
-        public DateTime RegistredDate { get; set; }
-    }
 }
