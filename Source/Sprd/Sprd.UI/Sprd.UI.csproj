@@ -20,9 +20,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SprdCore\SprdCore.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="WindowsFormsIntegration">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Reference Assemblies\Microsoft\Framework\v3.0\WindowsFormsIntegration.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>

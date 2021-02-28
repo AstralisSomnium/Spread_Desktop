@@ -5,130 +5,107 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:integration="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:collections="clr-namespace:Avalonia.Collections;assembly=Avalonia.Controls.DataGrid"
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
         x:Class="Sprd.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Sprd for CARDANO: Every pool mints soon a block!"
         >
-
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition   />
-      <RowDefinition  />
-    </Grid.RowDefinitions>
 
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition  />
-        <ColumnDefinition  />
-      </Grid.ColumnDefinitions>
+  <DockPanel>
+
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_Logs" Click="OpenLogs_FromMenu" >
+
+          <MenuItem.Icon>
+            <Image Source="/Assets/avalonia-logo.ico" />
+          </MenuItem.Icon>
+        </MenuItem>
+        <Separator />
+        <MenuItem Header="_Exit" Click="Exit_FromMenu" >
+          <MenuItem.Icon>
+            <Image Source="/Assets/avalonia-logo.ico" />
+          </MenuItem.Icon>
+        </MenuItem>
+      </MenuItem>
+    </Menu>
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
       <Grid.RowDefinitions>
-        <RowDefinition   />
-        <RowDefinition  />
+        <RowDefinition Height="Auto" />
+        <RowDefinition  Height="*"/>
       </Grid.RowDefinitions>
 
-      <Label Grid.Column="0" Content="Server Status"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
-      <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ServerStatus}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-      <Expander Grid.Row="1" Grid.Column="0" Header="Logs" IsExpanded="False">
-        <TextBlock Text="{Binding ServerLogs}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-      </Expander>
-    </Grid>
+      <Grid Grid.Row="1" >
+        <Grid IsVisible="{Binding !AllTimeZeroBlocksPools.Count }">
+          <TextBlock Text="Fetching Stake Pool Meta Data from servers (about 100mb).. can take a while"></TextBlock>
+        </Grid>
+        <TabControl IsVisible="{Binding !!AllTimeZeroBlocksPools.Count }" >
 
-
-    <Grid Grid.Row="1">
-
-      <TabControl>
-        <TabItem>
+          <TabItem>
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                    <TextBlock Text="Pools with 0 blocks" Foreground="Red" />
-                </StackPanel>
+              <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
+                <TextBlock Text="Pools with 0 blocks" Foreground="Red" />
+              </StackPanel>
             </TabItem.Header>
             <TabControl>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                            <TextBlock Text="All time" Foreground="Red" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <ListBox Items="{Binding AllTimeZeroBlocksPools}">
-                        <ListBox.Template>
-                            <ControlTemplate>
-                                <DockPanel LastChildFill="True">
-                                    <Grid DockPanel.Dock="Top" Height="30">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0">Pool</Label>
-                                        <Label Grid.Column="1">Lifetime blocks</Label>
-                                        <Label Grid.Column="2">Active Stake</Label>
-                                        <Label Grid.Column="3">Active block chance %</Label>
-                                        <Label Grid.Column="4">SPRD Stake</Label>
-                                        <Label Grid.Column="5">Running since</Label>
-                                        <Label Grid.Column="6">SPRD Ada</Label>
-                                    </Grid>
-                                    <ItemsPresenter></ItemsPresenter>
-                                </DockPanel>
-                            </ControlTemplate>
-                        </ListBox.Template>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0,2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Metadata.Name}"></TextBlock>
-                                    <TextBox Text="{Binding Metrics.ProducedBlocks.Quantity}" Grid.Column="1"></TextBox>
-                                    <TextBox Text="{Binding Metrics.RelativeStake.Quantity}" Grid.Column="2"></TextBox>
-                                    <TextBox Text="{Binding BlockChance}" Grid.Column="3"></TextBox>
-                                    <TextBox Text="{Binding SprdStake}" Grid.Column="4"></TextBox>
-                                    <TextBox Text="{Binding RegistredDate}" Grid.Column="5"></TextBox>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                            <TextBlock Text="Almost funded" Foreground="Red" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    
-                </TabItem>
-            </TabControl>
-        </TabItem>
-        <TabItem>
-            <TabItem.Header>
-                <StackPanel Orientation="Horizontal">
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Orientation="Horizontal">
                     <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                    <TextBlock Text="All Pools" Foreground="Red" />
-                </StackPanel>
+                    <TextBlock Text="All time" Foreground="Red" />
+                  </StackPanel>
+                </TabItem.Header>
+                <DataGrid VerticalScrollBarVisibility="Visible" MinHeight="250" MinWidth="250" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllTimeZeroBlocksPools}">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Metadata.Name}"
+                                        Header="Pool"/>
+
+                    <DataGridTextColumn Binding="{Binding Metrics.ProducedBlocks.Quantity}"
+                                        Header="Lifetime blocks" />
+                    <DataGridTextColumn Binding="{Binding Metrics.RelativeStake.Quantity}"
+                                        Header="Active Stake"/>
+                    <DataGridTextColumn Binding="{Binding AciveStakeBlockChance}"
+                                        Header="Active block chance %"/>
+                    <DataGridTextColumn Binding="{Binding SprdStake}"
+                                        Header="SPRD Stake"/>
+                    <DataGridTextColumn Binding="{Binding SprdStakeBlockChange}"
+                                        Header="SPRD block chance %"/>
+                    <DataGridTextColumn Binding="{Binding RegistredDate}"
+                                        Header="Running since"/>
+                  </DataGrid.Columns>
+                </DataGrid>
+                  </TabItem>
+              <TabItem>
+                <TabItem.Header>
+                  <StackPanel Orientation="Horizontal">
+                    <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
+                    <TextBlock Text="Almost funded" Foreground="Red" />
+                  </StackPanel>
+                </TabItem.Header>
+
+              </TabItem>
+            </TabControl>
+          </TabItem>
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
+                <TextBlock Text="All Pools" Foreground="Red" />
+              </StackPanel>
             </TabItem.Header>
-        </TabItem>
-      </TabControl>
+          </TabItem>
+        </TabControl>
+      </Grid>
+
     </Grid>
 
-  </Grid>
-
+  </DockPanel>
 </Window>

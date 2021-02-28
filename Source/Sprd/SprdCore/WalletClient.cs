@@ -33,13 +33,23 @@ namespace SprdCore
             _port = port;
         }
 
-        public async Task<List<StakePoolApiResponse>> GetAllPools()
+        public async Task<List<StakePoolApiResponse>> GetAllPoolsAsync()
         {
             var basePath = string.Format("http://localhost:{0}/v2", _port);
             Log.Verbose("Sending request for list all stake pools..");
 
             var stakePoolApi = new StakePoolsApi(basePath);
             var alListStakePools = await stakePoolApi.ListStakePoolsAsync(1);
+            return alListStakePools;
+        }
+
+        public List<StakePoolApiResponse> GetAllPools()
+        {
+            var basePath = string.Format("http://localhost:{0}/v2", _port);
+            Log.Verbose("Sending request for list all stake pools..");
+
+            var stakePoolApi = new StakePoolsApi(basePath);
+            var alListStakePools = stakePoolApi.ListStakePools(0);
             return alListStakePools;
         }
     }
