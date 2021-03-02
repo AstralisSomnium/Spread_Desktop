@@ -23,8 +23,8 @@ namespace Sprd.UI.ViewModels
         readonly CardanoServer _cardanoServer;
         readonly WalletClient _walletClient;
 
-        private ObservableCollection<StakePoolApiResponse> _allTimeZeroBlocksPools;
-        public ObservableCollection<StakePoolApiResponse> AllTimeZeroBlocksPools
+        private ObservableCollection<StakePool> _allTimeZeroBlocksPools;
+        public ObservableCollection<StakePool> AllTimeZeroBlocksPools
         {
             get { return _allTimeZeroBlocksPools; }
             set
@@ -42,7 +42,7 @@ namespace Sprd.UI.ViewModels
         {
             _desktopMainWindow = desktopMainWindow;
             
-            AllTimeZeroBlocksPools = new ObservableCollection<StakePoolApiResponse>();
+            AllTimeZeroBlocksPools = new ObservableCollection<StakePool>();
 
             _cardanoServer = new CardanoServer();
             _walletClient = new WalletClient(_nodePort);
@@ -68,7 +68,7 @@ namespace Sprd.UI.ViewModels
             var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
 
             var test = await _walletClient.GetAllPoolsAsync();
-            AllTimeZeroBlocksPools.AddRange(test);
+            //AllTimeZeroBlocksPools.AddRange(test);
             OnPropertyChanged("LoadedPoolMetaDatas");
             return true;
         }

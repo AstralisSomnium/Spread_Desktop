@@ -65,20 +65,20 @@
                 </TabItem.Header>
                 <DataGrid VerticalScrollBarVisibility="Visible" MinHeight="250" MinWidth="250" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllTimeZeroBlocksPools}">
                   <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Metadata.Name}"
+                    <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Pool"/>
 
-                    <DataGridTextColumn Binding="{Binding Metrics.ProducedBlocks.Quantity}"
+                    <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
                                         Header="Lifetime blocks" />
-                    <DataGridTextColumn Binding="{Binding Metrics.RelativeStake.Quantity}"
+                    <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
                                         Header="Active Stake"/>
-                    <DataGridTextColumn Binding="{Binding AciveStakeBlockChance}"
+                    <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
                                         Header="Active block chance %"/>
-                    <DataGridTextColumn Binding="{Binding SprdStake}"
+                    <DataGridTextColumn Binding="{Binding SprdStakeADA}"
                                         Header="SPRD Stake"/>
-                    <DataGridTextColumn Binding="{Binding SprdStakeBlockChange}"
+                    <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
                                         Header="SPRD block chance %"/>
-                    <DataGridTextColumn Binding="{Binding RegistredDate}"
+                    <DataGridTextColumn Binding="{Binding PoolRegistered}"
                                         Header="Running since"/>
                   </DataGrid.Columns>
                 </DataGrid>
