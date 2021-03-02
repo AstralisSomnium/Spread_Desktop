@@ -2,16 +2,24 @@
 
 We do 2 things:
 1. Developing Software to help pool operators
-2. Operating a Cardano Stake Pool: [SPRD]
+2. Operating a Cardano Stake Pool: [[SPRD]](https://adapools.org/pool/2064da38531dad327135edd98003032cefa059c4c8c50c2b0440c63d)
+
+Visit the website: http://sprd-pool.org/
 
 # 1. Software
 
 Spread.exe, spreads the cardano rewards to be fair! 
 The goal is that every pool mints a block!!
 
+## No release so far!
+
+At the moment we are working on the first release and now its nothing to download so far!
+
+The first software will be released mid/end of march, be exicted and click `WATCH` to this Github Repository on the right up corner. See you! 
+
 ### Supports Windows, Linux and Mac
 
-Uses .Net Core with UI of https://avaloniaui.net/
+Uses [Microsoft .Net Core](https://dotnet.microsoft.com/download) with UI of [AvaloniUI](https://avaloniaui.net/)
 
 ### Logging
 
@@ -21,21 +29,18 @@ Uses .Net Core with UI of https://avaloniaui.net/
 ### Cardano-Wallet API
 
 Used swagger to generate the API:
-+  https://editor.swagger.io/
++ https://editor.swagger.io/
 + https://input-output-hk.github.io/cardano-wallet/api/edge/swagger.yaml
   + Version: 2021.2.15
 
 
 # 2. Our stake pool [SPRD]
 
-Visit the website: http://sprd-pool.org/
-
 Time is valuable and we deliver you valuable software with our time:
 + The software is free to use
 + We believe that every download supports us by paypal, patreaon or by delegating ADA to our stake pool. (see below the details)
 
-Be fair and support us now!
-
+**Be fair and support us now!**
 
 
 ## Delegate ADA to our stake pool [SPRD]
