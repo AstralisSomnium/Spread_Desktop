@@ -54,12 +54,14 @@ namespace SprdCore
 
     public class Wallet
     {
+        const int lovealceToAda = 1000000;
+
         public Wallet(InlineResponse200 apiResponse)
         {
             Base = apiResponse;
 
             Name = apiResponse.Name;
-            BalanceAda = ((int) apiResponse.Balance.Available.Quantity) / 100000;
+            BalanceAda = ((int) apiResponse.Balance.Available.Quantity) / lovealceToAda;
             CurrentEpochDelegationStatus = apiResponse.Delegation.Active.Status.ToString();
             if (apiResponse.Delegation.Active.Status == WalletsDelegationActive.StatusEnum.Delegating)
                 CurrentEpochDelegationStatus = string.Format("{0} {1}", apiResponse.Delegation.Active.Status,
@@ -69,9 +71,9 @@ namespace SprdCore
             if (apiResponse.State.Status == WalletsState.StatusEnum.Syncing)
                 WalletStatus = string.Format("{0} {1} / 100", apiResponse.State.Status,
                     apiResponse.State.Progress.Quantity);
-            if (apiResponse.Delegation.Next.Count >= 2)
+            if (apiResponse.Delegation.Next.Count >= 1)
             {
-                var nextDelegation = apiResponse.Delegation.Next[1];
+                var nextDelegation = apiResponse.Delegation.Next[0];
                 NextEpochDelegationStatus = nextDelegation.Status.ToString();
                 if (nextDelegation.Status == WalletsDelegationNext.StatusEnum.Delegating)
                     CurrentEpochDelegationStatus = string.Format("{0} {1} in {2} (Epoch {3})", nextDelegation.Status,
@@ -79,9 +81,9 @@ namespace SprdCore
                         nextDelegation.ChangesAt.EpochNumber);
             }
 
-            if (apiResponse.Delegation.Next.Count >= 3)
+            if (apiResponse.Delegation.Next.Count >= 2)
             {
-                var nextDelegation = apiResponse.Delegation.Next[2];
+                var nextDelegation = apiResponse.Delegation.Next[1];
                 LastEpochDelegationStatus = nextDelegation.Status.ToString();
                 if (nextDelegation.Status == WalletsDelegationNext.StatusEnum.Delegating)
                     LastEpochDelegationStatus = string.Format("{0} {1} in {2} (Epoch {3})", nextDelegation.Status,
@@ -92,7 +94,7 @@ namespace SprdCore
 
         public InlineResponse200 Base { get; private set; }
         public string Name { get; private set; }
-        public double BalanceAda { get; private set; }
+        public decimal BalanceAda { get; private set; }
         public string WalletStatus { get; private set; }
         public string CurrentEpochDelegationStatus { get; private set; }
         public string NextEpochDelegationStatus { get; private set; }
