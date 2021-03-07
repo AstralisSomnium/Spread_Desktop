@@ -11,6 +11,7 @@ using DynamicData;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using ReactiveUI;
+using Serilog;
 using SprdCore;
 
 namespace Sprd.UI.ViewModels
@@ -23,15 +24,44 @@ namespace Sprd.UI.ViewModels
         readonly CardanoServer _cardanoServer;
         readonly WalletClient _walletClient;
 
-        private ObservableCollection<StakePool> _allTimeZeroBlocksPools;
-        public ObservableCollection<StakePool> AllTimeZeroBlocksPools
+        private ObservableCollection<Wallet> _allWallets;
+        public ObservableCollection<Wallet> AllWallets
         {
-            get { return _allTimeZeroBlocksPools; }
+            get
+            {
+                return new ObservableCollection<Wallet>(_allWallets.OrderBy(o => o.Name));
+            }
             set
             {
-                _allTimeZeroBlocksPools = value;
+                _allWallets = value;
                 OnPropertyChanged();
             }
+        }
+
+        private ObservableCollection<StakePool> _allStakePools;
+        public ObservableCollection<StakePool> AllStakePools
+        {
+            get
+            {
+                return new ObservableCollection<StakePool>(_allStakePools.OrderBy(o => o.LifeTimeBlocks));
+            }
+            set
+            {
+                _allStakePools = value;
+                OnPropertyChanged();
+                OnPropertyChanged("AllTimeZeroBlocksPools");
+                OnPropertyChanged("AlmostFundedPools");
+            }
+        }
+
+        public ObservableCollection<StakePool> AllTimeZeroBlocksPools
+        {
+            get { return new ObservableCollection<StakePool>(AllStakePools.Where(p => p.LifeTimeBlocks == 0).OrderBy(o=>o.Name)); }
+        }
+
+        public ObservableCollection<StakePool> AlmostFundedPools
+        {
+            get { return new ObservableCollection<StakePool>(AllStakePools.Where(p => p.SprdStakeBlockChance > 50).OrderBy(o=>o.SprdStakeBlockChance)); }
         }
 
         public MainWindowViewModel()
@@ -41,8 +71,9 @@ namespace Sprd.UI.ViewModels
         public MainWindowViewModel(Window desktopMainWindow)
         {
             _desktopMainWindow = desktopMainWindow;
-            
-            AllTimeZeroBlocksPools = new ObservableCollection<StakePool>();
+
+            _allStakePools = new ObservableCollection<StakePool>();
+            _allWallets = new ObservableCollection<Wallet>();
 
             _cardanoServer = new CardanoServer();
             _walletClient = new WalletClient(_nodePort);
@@ -60,26 +91,19 @@ namespace Sprd.UI.ViewModels
             //DoTheThing = ReactiveCommand.Create<string>(RunTheThing);
 
             //var result = StartServerAsync();
-            var result = StartServer();
+            var result = StartServerAsync();
         }
 
         async Task<bool> StartServerAsync()
         {
             var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
 
-            var test = await _walletClient.GetAllPoolsAsync();
-            //AllTimeZeroBlocksPools.AddRange(test);
-            OnPropertyChanged("LoadedPoolMetaDatas");
-            return true;
-        }
 
-        bool StartServer()
-        {
-            var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
+            var allWallets = await _walletClient.GetAllWalletsAsync();
+            AllWallets = new ObservableCollection<Wallet>(allWallets);
 
-            var test = _walletClient.GetAllPools();
-            AllTimeZeroBlocksPools.AddRange(test);
-            //OnPropertyChanged("AllTimeZeroBlocksPools");
+            var allPools = await _walletClient.GetAllPoolsAsync();
+            AllStakePools = new ObservableCollection<StakePool>(allPools);
             return true;
         }
 
@@ -94,5 +118,4 @@ namespace Sprd.UI.ViewModels
             _cardanoServer.Dispose();
         }
     }
-
 }

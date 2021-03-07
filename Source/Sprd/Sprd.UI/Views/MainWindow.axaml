@@ -8,7 +8,7 @@
         xmlns:collections="clr-namespace:Avalonia.Collections;assembly=Avalonia.Controls.DataGrid"
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
         x:Class="Sprd.UI.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/Sprd_Logo.ico"
         Title="Sprd for CARDANO: Every pool mints soon a block!"
         >
   <Design.DataContext>
@@ -23,47 +23,62 @@
         <MenuItem Header="_Logs" Click="OpenLogs_FromMenu" >
 
           <MenuItem.Icon>
-            <Image Source="/Assets/avalonia-logo.ico" />
+            <Image Source="/Assets/iconfinder_logs_2429331.png" />
           </MenuItem.Icon>
         </MenuItem>
         <Separator />
         <MenuItem Header="_Exit" Click="Exit_FromMenu" >
           <MenuItem.Icon>
-            <Image Source="/Assets/avalonia-logo.ico" />
+            <Image Source="/Assets/iconfinder_icons_exit2_1564506.png" />
           </MenuItem.Icon>
         </MenuItem>
       </MenuItem>
     </Menu>
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid>
       <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
         <RowDefinition  Height="*"/>
       </Grid.RowDefinitions>
 
+      <Grid>
+        <TabControl Margin="0, 30, 0,0">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/iconfinder_wallet-money-credit_card-payment_method_4288572.png" Width="40" Height="40" />
+                        <TextBlock Text="Wallets in Daedalus" Foreground="black" Margin="15"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <DataGrid AutoGenerateColumns="true" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllWallets}">
+
+                </DataGrid>
+            </TabItem>
+            </TabControl>
+      </Grid>
 
       <Grid Grid.Row="1" >
-        <Grid IsVisible="{Binding !AllTimeZeroBlocksPools.Count }">
+        <Grid IsVisible="{Binding !AllStakePools.Count }">
           <TextBlock Text="Fetching Stake Pool Meta Data from servers (about 100mb).. can take a while"></TextBlock>
         </Grid>
-        <TabControl IsVisible="{Binding !!AllTimeZeroBlocksPools.Count }" >
+        <TabControl IsVisible="{Binding !!AllStakePools.Count }" >
 
           <TabItem>
             <TabItem.Header>
               <StackPanel Orientation="Horizontal">
-                <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                <TextBlock Text="Pools with 0 blocks" Foreground="Red" />
+                <Image Source="/Assets/iconfinder_nothing_to_say_66327.png" Width="40" Height="40" />
+                <TextBlock Text="Pools with 0 blocks" Foreground="black" Margin="15" FontWeight="Bold" />
               </StackPanel>
             </TabItem.Header>
             <TabControl>
               <TabItem>
                 <TabItem.Header>
                   <StackPanel Orientation="Horizontal">
-                    <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                    <TextBlock Text="All time" Foreground="Red" />
+                    <Image Source="/Assets/iconfinder_nothing_66328.png" Width="40" Height="40" />
+                    <TextBlock Text="All time" Foreground="Red" Margin="15"/>
                   </StackPanel>
                 </TabItem.Header>
-                <DataGrid VerticalScrollBarVisibility="Visible" MinHeight="250" MinWidth="250" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllTimeZeroBlocksPools}">
+                <DataGrid VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllTimeZeroBlocksPools}">
                   <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Pool"/>
@@ -82,14 +97,33 @@
                                         Header="Running since"/>
                   </DataGrid.Columns>
                 </DataGrid>
-                  </TabItem>
+              </TabItem>
               <TabItem>
                 <TabItem.Header>
                   <StackPanel Orientation="Horizontal">
-                    <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                    <TextBlock Text="Almost funded" Foreground="Red" />
+                    <Image Source="/Assets/iconfinder_game_of_thrones_game_thrones_series_element_fire_flame_heat_4527379.png" Width="40" Height="40" />
+                    <TextBlock Text="Almost funded" Foreground="Red" Margin="15" />
                   </StackPanel>
                 </TabItem.Header>
+                  <DataGrid VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AlmostFundedPools}">
+                      <DataGrid.Columns>
+                          <DataGridTextColumn Binding="{Binding Name}"
+                                              Header="Pool"/>
+
+                          <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                              Header="Lifetime blocks" />
+                          <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
+                                              Header="Active Stake"/>
+                          <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
+                                              Header="Active block chance %"/>
+                          <DataGridTextColumn Binding="{Binding SprdStakeADA}"
+                                              Header="SPRD Stake"/>
+                          <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
+                                              Header="SPRD block chance %"/>
+                          <DataGridTextColumn Binding="{Binding PoolRegistered}"
+                                              Header="Running since"/>
+                      </DataGrid.Columns>
+                  </DataGrid>
 
               </TabItem>
             </TabControl>
@@ -97,10 +131,30 @@
           <TabItem>
             <TabItem.Header>
               <StackPanel Orientation="Horizontal">
-                <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40" />
-                <TextBlock Text="All Pools" Foreground="Red" />
+                <Image Source="/Assets/iconfinder_cardano_ada_2844382.png" Width="40" Height="40" />
+                <TextBlock Text="All Pools" Foreground="Red" Margin="15" />
               </StackPanel>
             </TabItem.Header>
+
+              <DataGrid VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllStakePools}">
+                  <DataGrid.Columns>
+                      <DataGridTextColumn Binding="{Binding Name}"
+                                          Header="Pool"/>
+
+                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                          Header="Lifetime blocks" />
+                      <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
+                                          Header="Active Stake"/>
+                      <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
+                                          Header="Active block chance %"/>
+                      <DataGridTextColumn Binding="{Binding SprdStakeADA}"
+                                          Header="SPRD Stake"/>
+                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
+                                          Header="SPRD block chance %"/>
+                      <DataGridTextColumn Binding="{Binding PoolRegistered}"
+                                          Header="Running since"/>
+                  </DataGrid.Columns>
+              </DataGrid>
           </TabItem>
         </TabControl>
       </Grid>

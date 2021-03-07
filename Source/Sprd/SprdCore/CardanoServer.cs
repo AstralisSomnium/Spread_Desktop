@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Serilog;
 using SprdCore.Annotations;
 
@@ -42,14 +43,8 @@ namespace SprdCore
                 Log.Verbose("Starting Daedalus now...");
                 var process = Process.Start(DaedalusExePath.FullName);
 
-                var timeout = 100000;
-                var started = process.WaitForInputIdle(timeout);
-                if (!started)
-                {
-                    var errorMsg = string.Format("Timed-out after {0} to start {1}", timeout, DaedalusExePath.Name); 
-                    Log.Error(errorMsg);
-                    throw new Exception(errorMsg);
-                }
+                var timeout = 14 * 1000;
+                Thread.Sleep(timeout);
             }
 
             Log.Verbose("Starting server...");
