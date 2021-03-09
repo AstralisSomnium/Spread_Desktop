@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using DynamicData;
 using IO.Swagger.Api;
@@ -16,7 +17,13 @@ using SprdCore;
 
 namespace Sprd.UI.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase, IDisposable, INotifyPropertyChanged
+    public interface IMainWindowViewModel
+    {
+        ObservableCollection<Wallet> AllWallets { get; set; }
+        Avalonia.Collections.DataGridCollectionView AllStakePools { get; set; }
+    }
+
+    public class MainWindowViewModel : ViewModelBase, IDisposable, INotifyPropertyChanged, IMainWindowViewModel
     {
         readonly Window _desktopMainWindow;
 
@@ -38,30 +45,18 @@ namespace Sprd.UI.ViewModels
             }
         }
 
-        private ObservableCollection<StakePool> _allStakePools;
-        public ObservableCollection<StakePool> AllStakePools
+        private Avalonia.Collections.DataGridCollectionView _allStakePools;
+        public Avalonia.Collections.DataGridCollectionView AllStakePools
         {
             get
             {
-                return new ObservableCollection<StakePool>(_allStakePools.OrderBy(o => o.LifeTimeBlocks));
+                return _allStakePools;
             }
             set
             {
                 _allStakePools = value;
                 OnPropertyChanged();
-                OnPropertyChanged("AllTimeZeroBlocksPools");
-                OnPropertyChanged("AlmostFundedPools");
             }
-        }
-
-        public ObservableCollection<StakePool> AllTimeZeroBlocksPools
-        {
-            get { return new ObservableCollection<StakePool>(AllStakePools.Where(p => p.LifeTimeBlocks == 0).OrderBy(o=>o.Name)); }
-        }
-
-        public ObservableCollection<StakePool> AlmostFundedPools
-        {
-            get { return new ObservableCollection<StakePool>(AllStakePools.Where(p => p.SprdStakeBlockChance > 50).OrderBy(o=>o.SprdStakeBlockChance)); }
         }
 
         public MainWindowViewModel()
@@ -72,7 +67,7 @@ namespace Sprd.UI.ViewModels
         {
             _desktopMainWindow = desktopMainWindow;
 
-            _allStakePools = new ObservableCollection<StakePool>();
+            _allStakePools = new Avalonia.Collections.DataGridCollectionView(Enumerable.Empty<StakePool>());
             _allWallets = new ObservableCollection<Wallet>();
 
             _cardanoServer = new CardanoServer();
@@ -88,9 +83,6 @@ namespace Sprd.UI.ViewModels
 
         public void StartCardanoServer(object? sender, EventArgs e)
         {
-            //DoTheThing = ReactiveCommand.Create<string>(RunTheThing);
-
-            //var result = StartServerAsync();
             var result = StartServerAsync();
         }
 
@@ -98,12 +90,21 @@ namespace Sprd.UI.ViewModels
         {
             var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
 
-
             var allWallets = await _walletClient.GetAllWalletsAsync();
             AllWallets = new ObservableCollection<Wallet>(allWallets);
 
             var allPools = await _walletClient.GetAllPoolsAsync();
-            AllStakePools = new ObservableCollection<StakePool>(allPools);
+            var allPoolsGrouped = allPools.GroupBy(g=>g.LifeTimeBlocks).ToDictionary(x => x.Key, x => x.ToList());
+            var allStakePoolsGroups = new DataGridCollectionView(allPools);
+            allStakePoolsGroups.GroupDescriptions.Add(new DataGridPathGroupDescription("LifeTimeBlocks"));
+            allStakePoolsGroups.Filter = FilterProperty;
+            AllStakePools = allStakePoolsGroups;
+            return true;
+        }
+
+        private bool FilterProperty(object arg)
+        {
+            Log.Verbose("FilterProperty: " + arg);
             return true;
         }
 

@@ -5,6 +5,10 @@ namespace SprdCore
 {
     public class StakePool
     {
+        public StakePool()
+        {
+        }
+
         public StakePool(StakePoolApiResponse apiResponse)
         {
             Base = apiResponse;
@@ -23,13 +27,13 @@ namespace SprdCore
             PoolRegistered = DateTime.MinValue; // ToDo
         }
 
-        public StakePoolApiResponse Base { get; private set; }
-        public string Name { get; private set; }
-        public int? LifeTimeBlocks { get; private set; }
-        public decimal? ActiveStakeAda { get; private set; }
-        public double ActiveBlockChance { get; private set; }
-        public double SprdStakeADA { get; private set; }
-        public double SprdStakeBlockChance { get; private set; }
-        public DateTime PoolRegistered { get; private set; }
+        public StakePoolApiResponse Base { get; internal set; }
+        public string Name { get; internal set; }
+        public int? LifeTimeBlocks { get; internal set; }
+        public decimal? ActiveStakeAda { get; internal set; }
+        public double ActiveBlockChance { get; internal set; }
+        public double SprdStakeADA { get; internal set; }
+        public double SprdStakeBlockChance { get; internal set; }
+        public DateTime PoolRegistered { get; internal set; }
     }
 }

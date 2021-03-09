@@ -1,26 +1,63 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Sprd.UI.ViewModels"
+        xmlns:dd="clr-namespace:Sprd.UI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        d:DataContext="{x:Static dd:DesignData.FakeViewModel}"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:integration="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:collections="clr-namespace:Avalonia.Collections;assembly=Avalonia.Controls.DataGrid"
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="450"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         x:Class="Sprd.UI.Views.MainWindow"
         Icon="/Assets/Sprd_Logo.ico"
-        Title="Sprd for CARDANO: Every pool mints soon a block!"
+        Title="SPRD for CARDANO: Every pool mints soon a block!"
         >
+  <Window.Styles>
+    <Styles>
+      <Style Selector="DataGrid">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="CanUserResizeColumns" Value="True" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="MinWidth" Value="450" />
+        <Setter Property="Margin" Value="20, 0, 20,25" />
+      </Style>
+
+      <Style Selector="DataGridColumnHeader">
+        <Setter Property="FontSize" Value="15" />
+      </Style>
+
+      <Style Selector="DataGridCell">
+        <Setter Property="FontSize" Value="13" />
+      </Style>
+
+      <Style Selector="TextBlock">
+        <Setter Property="TextWrapping" Value="Wrap" />
+      </Style>
+
+      <Style Selector="Image">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Width" Value="30" />
+      </Style>
+
+      <Style Selector="StackPanel > TextBlock">
+        <Setter Property="Margin" Value="5" />
+      </Style>
+    </Styles>
+  </Window.Styles>
+
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-
-  <DockPanel>
-      <Menu DockPanel.Dock="Top">
+  <DockPanel HorizontalAlignment="Stretch">
+    <Menu DockPanel.Dock="Top" Margin="5, 5,0,0">
       <MenuItem Header="_File">
         <MenuItem Header="_Logs" Click="OpenLogs_FromMenu" >
-
           <MenuItem.Icon>
             <Image Source="/Assets/iconfinder_logs_2429331.png" />
           </MenuItem.Icon>
@@ -32,111 +69,88 @@
           </MenuItem.Icon>
         </MenuItem>
       </MenuItem>
+
+      <MenuItem Header="_About">
+        <MenuItem Header="_View Github" Click="ViewGithub_FromMenu" >
+          <MenuItem.Icon>
+            <Image Source="/Assets/iconfinder_mark-github_298822.png" />
+          </MenuItem.Icon>
+        </MenuItem>
+        <Separator />
+        <MenuItem Header="_Visit Website" Click="VisitSpread_FromMenu" >
+          <MenuItem.Icon>
+            <Image Source="/Assets/Sprd_Logo.ico" />
+          </MenuItem.Icon>
+        </MenuItem>
+        <Separator />
+        <TextBlock Text="Version 1.0.0.0"/>
+      </MenuItem>
+      <TextBlock HorizontalAlignment="Right" Opacity="0.3" IsEnabled="False" IsHitTestVisible="False" FontWeight="Light" Text="We do not save, send or read any confidential data about your wallets. The code is open source on Github. Secure and fair!" />
     </Menu>
+
 
     <Grid>
       <Grid.RowDefinitions>
-        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
         <RowDefinition  Height="*"/>
       </Grid.RowDefinitions>
 
-      <Grid>
-        <TabControl Margin="0, 30, 0,0">
-            <TabItem>
-                <TabItem.Header>
+
+      <Grid Grid.Row="1" DockPanel.Dock="Bottom">
+
+        <TabControl>
+
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/iconfinder_cardano_ada_2844382.png" />
+                <TextBlock Text="Stake Pools" Foreground="black" FontWeight="Bold" />
+              </StackPanel>
+            </TabItem.Header>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition  Height="*"/>
+              </Grid.RowDefinitions>
+              <Grid IsVisible="{Binding !AllStakePools.Count }">
+                <TextBlock Text="Fetching Stake Pools from servers (about 100mb).. can take few minutes. Be patient, be fair!" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
+              </Grid>
+              <TabControl Grid.Row="1" IsVisible="{Binding !!AllStakePools.Count }">
+                <TabItem>
+                  <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Assets/iconfinder_wallet-money-credit_card-payment_method_4288572.png" Width="40" Height="40" />
-                        <TextBlock Text="Wallets in Daedalus" Foreground="black" Margin="15"/>
+                      <Image Source="/Assets/iconfinder_nothing_to_say_66327.png" />
+                      <TextBlock Text="0 Blocks" Foreground="Red"/>
                     </StackPanel>
-                </TabItem.Header>
-              <DataGrid IsReadOnly="True" AutoGenerateColumns="true" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllWallets}">
-
-                </DataGrid>
-            </TabItem>
-            </TabControl>
-      </Grid>
-
-      <Grid Grid.Row="1" >
-        <Grid IsVisible="{Binding !AllStakePools.Count }">
-          <TextBlock Text="Fetching Stake Pool Meta Data from servers (about 100mb).. can take a while"></TextBlock>
-        </Grid>
-        <TabControl IsVisible="{Binding !!AllStakePools.Count }" >
-
-          <TabItem>
-            <TabItem.Header>
-              <StackPanel Orientation="Horizontal">
-                <Image Source="/Assets/iconfinder_nothing_to_say_66327.png" Width="40" Height="40" />
-                <TextBlock Text="Pools with 0 blocks" Foreground="black" Margin="15" FontWeight="Bold" />
-              </StackPanel>
-            </TabItem.Header>
-            <TabControl>
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Orientation="Horizontal">
-                    <Image Source="/Assets/iconfinder_nothing_66328.png" Width="40" Height="40" />
-                    <TextBlock Text="All time" Foreground="Red" Margin="15"/>
-                  </StackPanel>
-                </TabItem.Header>
-                <DataGrid IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllTimeZeroBlocksPools}">
-                  <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Name}"
-                                        Header="Pool"/>
-
-                    <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                        Header="Lifetime blocks" />
-                    <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
-                                        Header="Active Stake"/>
-                    <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
-                                        Header="Active block chance %"/>
-                    <DataGridTextColumn Binding="{Binding SprdStakeADA}"
-                                        Header="SPRD Stake"/>
-                    <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
-                                        Header="SPRD block chance %"/>
-                    <DataGridTextColumn Binding="{Binding PoolRegistered}"
-                                        Header="Running since"/>
-                  </DataGrid.Columns>
-                </DataGrid>
-              </TabItem>
-              <TabItem>
-                <TabItem.Header>
-                  <StackPanel Orientation="Horizontal">
-                    <Image Source="/Assets/iconfinder_game_of_thrones_game_thrones_series_element_fire_flame_heat_4527379.png" Width="40" Height="40" />
-                    <TextBlock Text="Almost funded" Foreground="Red" Margin="15" />
-                  </StackPanel>
-                </TabItem.Header>
-                  <DataGrid IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AlmostFundedPools}">
-                      <DataGrid.Columns>
-                          <DataGridTextColumn Binding="{Binding Name}"
-                                              Header="Pool"/>
-
-                          <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                              Header="Lifetime blocks" />
-                          <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
-                                              Header="Active Stake"/>
-                          <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
-                                              Header="Active block chance %"/>
-                          <DataGridTextColumn Binding="{Binding SprdStakeADA}"
-                                              Header="SPRD Stake"/>
-                          <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
-                                              Header="SPRD block chance %"/>
-                          <DataGridTextColumn Binding="{Binding PoolRegistered}"
-                                              Header="Running since"/>
-                      </DataGrid.Columns>
+                  </TabItem.Header>
+                  <DataGrid Items="{Binding AllStakePools}">
+                    <DataGrid.Columns>
+                      <DataGridTextColumn Binding="{Binding Name}"
+                                          Header="Pool"/>
+                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                          Header="Lifetime blocks" />
+                      <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
+                                          Header="Active Stake"/>
+                      <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
+                                          Header="Active block chance %"/>
+                      <DataGridTextColumn Binding="{Binding SprdStakeADA}"
+                                          Header="SPRD Stake"/>
+                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
+                                          Header="SPRD block chance %"/>
+                      <DataGridTextColumn Binding="{Binding PoolRegistered}"
+                                          Header="Running since"/>
+                    </DataGrid.Columns>
                   </DataGrid>
-
-              </TabItem>
-            </TabControl>
-          </TabItem>
-          <TabItem>
-            <TabItem.Header>
-              <StackPanel Orientation="Horizontal">
-                <Image Source="/Assets/iconfinder_cardano_ada_2844382.png" Width="40" Height="40" />
-                <TextBlock Text="All Pools" Foreground="Red" Margin="15" />
-              </StackPanel>
-            </TabItem.Header>
-
-            <DataGrid IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Center" VerticalAlignment="Center" Items="{Binding AllStakePools}">
-                  <DataGrid.Columns>
+                </TabItem>
+                <TabItem>
+                  <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                      <Image Source="/Assets/iconfinder_game_of_thrones_game_thrones_series_element_fire_flame_heat_4527379.png" />
+                      <TextBlock Text="Almost funded" Foreground="Red" />
+                    </StackPanel>
+                  </TabItem.Header>
+                  <DataGrid IsReadOnly="True" Items="{Binding AlmostFundedPools}">
+                    <DataGrid.Columns>
                       <DataGridTextColumn Binding="{Binding Name}"
                                           Header="Pool"/>
 
@@ -152,8 +166,102 @@
                                           Header="SPRD block chance %"/>
                       <DataGridTextColumn Binding="{Binding PoolRegistered}"
                                           Header="Running since"/>
-                  </DataGrid.Columns>
+                    </DataGrid.Columns>
+                  </DataGrid>
+                </TabItem>
+              </TabControl>
+            </Grid>
+
+          </TabItem>
+
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/iconfinder_wallet-money-credit_card-payment_method_4288572.png" />
+                <TextBlock Text="Wallets" Foreground="black" />
+              </StackPanel>
+            </TabItem.Header>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition  Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition  Height="*"/>
+              </Grid.RowDefinitions>
+              <TextBlock Text="Wallets open in Daedalus" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+
+              <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding AllWallets}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Binding="{Binding Name}"
+                                      Header="Name"/>
+                  <DataGridTextColumn Binding="{Binding Balance}"
+                                      Header="Balance (ADA)" />
+                  <DataGridTextColumn Binding="{Binding WalletStatus}"
+                                      Header="Status" />
+                </DataGrid.Columns>
               </DataGrid>
+
+              <TextBlock Grid.Row="2" Text="Delegations" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+
+              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding AllWallets}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Binding="{Binding Pool}"
+                                      Header="Name"/>
+                  <DataGridTextColumn Binding="{Binding Epoch}"
+                                      Header="Epoch" />
+                </DataGrid.Columns>
+              </DataGrid>
+
+            </Grid>
+          </TabItem>
+
+          <TabItem>
+            <TabItem.Header>
+              <StackPanel Orientation="Horizontal">
+                <Image Source="/Assets/Sprd_Logo.ico" />
+                <TextBlock Text="SPRD" Foreground="black" />
+              </StackPanel>
+            </TabItem.Header>
+
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition  Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition  Height="*"/>
+              </Grid.RowDefinitions>
+              <TextBlock Text="Last committed ADA by SPRD" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+
+              <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Binding="{Binding Pool}"
+                                      Header="Name"/>
+                  <DataGridTextColumn Binding="{Binding ComittedAda}"
+                                      Header="Comitted ADA" />
+                  <DataGridTextColumn Binding="{Binding FromAdress}"
+                                      Header="From" />
+                  <DataGridTextColumn Binding="{Binding DateComitted}"
+                                      Header="Time" />
+                </DataGrid.Columns>
+              </DataGrid>
+
+              <TextBlock Grid.Row="2" Text="Last SPREAD for Pools" FontSize="17" Margin="24, 5,0,5" />
+
+              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastSpreadPools}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Binding="{Binding Pool}"
+                                      Header="Name"/>
+                  <DataGridTextColumn Binding="{Binding ComittedAda}"
+                                      Header="Total spread ADA" />
+                  <DataGridTextColumn Binding="{Binding DelegatorsCount}"
+                                      Header="Delegators" />
+                  <DataGridTextColumn Binding="{Binding DateComitted}"
+                                      Header="Time" />
+                  <DataGridTextColumn Binding="{Binding Blocks}"
+                                      Header="CurrentBlocks" />
+                </DataGrid.Columns>
+              </DataGrid>
+            </Grid>
           </TabItem>
         </TabControl>
       </Grid>

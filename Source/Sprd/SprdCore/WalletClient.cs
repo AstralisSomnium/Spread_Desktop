@@ -62,34 +62,38 @@ namespace SprdCore
 
             Name = apiResponse.Name;
             BalanceAda = ((int) apiResponse.Balance.Available.Quantity) / lovealceToAda;
-            CurrentEpochDelegationStatus = apiResponse.Delegation.Active.Status.ToString();
-            if (apiResponse.Delegation.Active.Status == WalletsDelegationActive.StatusEnum.Delegating)
-                CurrentEpochDelegationStatus = string.Format("{0} {1}", apiResponse.Delegation.Active.Status,
-                    apiResponse.Delegation.Active.Target);
+            if (apiResponse.Delegation != null)
+            {
+                CurrentEpochDelegationStatus = apiResponse.Delegation.Active.Status.ToString();
+                if (apiResponse.Delegation.Active.Status == WalletsDelegationActive.StatusEnum.Delegating)
+                    CurrentEpochDelegationStatus = string.Format("{0} {1}", apiResponse.Delegation.Active.Status, apiResponse.Delegation.Active.Target);
+                
+                if (apiResponse.Delegation.Next.Count >= 1)
+                {
+                    var nextDelegation = apiResponse.Delegation.Next[0];
+                    NextEpochDelegationStatus = nextDelegation.Status.ToString();
+                    if (nextDelegation.Status == WalletsDelegationNext.StatusEnum.Delegating)
+                        CurrentEpochDelegationStatus = string.Format("{0} {1} in {2} (Epoch {3})", nextDelegation.Status,
+                            nextDelegation.Target, nextDelegation.ChangesAt.EpochStartTime,
+                            nextDelegation.ChangesAt.EpochNumber);
+                }
+
+                if (apiResponse.Delegation.Next.Count >= 2)
+                {
+                    var nextDelegation = apiResponse.Delegation.Next[1];
+                    LastEpochDelegationStatus = nextDelegation.Status.ToString();
+                    if (nextDelegation.Status == WalletsDelegationNext.StatusEnum.Delegating)
+                        LastEpochDelegationStatus = string.Format("{0} {1} in {2} (Epoch {3})", nextDelegation.Status,
+                            nextDelegation.Target, nextDelegation.ChangesAt.EpochStartTime,
+                            nextDelegation.ChangesAt.EpochNumber);
+                }
+            }
 
             WalletStatus = apiResponse.State.Status.ToString();
             if (apiResponse.State.Status == WalletsState.StatusEnum.Syncing)
                 WalletStatus = string.Format("{0} {1} / 100", apiResponse.State.Status,
                     apiResponse.State.Progress.Quantity);
-            if (apiResponse.Delegation.Next.Count >= 1)
-            {
-                var nextDelegation = apiResponse.Delegation.Next[0];
-                NextEpochDelegationStatus = nextDelegation.Status.ToString();
-                if (nextDelegation.Status == WalletsDelegationNext.StatusEnum.Delegating)
-                    CurrentEpochDelegationStatus = string.Format("{0} {1} in {2} (Epoch {3})", nextDelegation.Status,
-                        nextDelegation.Target, nextDelegation.ChangesAt.EpochStartTime,
-                        nextDelegation.ChangesAt.EpochNumber);
-            }
-
-            if (apiResponse.Delegation.Next.Count >= 2)
-            {
-                var nextDelegation = apiResponse.Delegation.Next[1];
-                LastEpochDelegationStatus = nextDelegation.Status.ToString();
-                if (nextDelegation.Status == WalletsDelegationNext.StatusEnum.Delegating)
-                    LastEpochDelegationStatus = string.Format("{0} {1} in {2} (Epoch {3})", nextDelegation.Status,
-                        nextDelegation.Target, nextDelegation.ChangesAt.EpochStartTime,
-                        nextDelegation.ChangesAt.EpochNumber);
-            }
+            
         }
 
         public InlineResponse200 Base { get; private set; }

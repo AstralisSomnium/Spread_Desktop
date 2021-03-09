@@ -46,7 +46,6 @@ namespace SprdCore
                 var timeout = 14 * 1000;
                 Thread.Sleep(timeout);
             }
-
             Log.Verbose("Starting server...");
 
 
