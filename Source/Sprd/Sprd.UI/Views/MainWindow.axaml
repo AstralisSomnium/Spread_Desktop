@@ -112,9 +112,16 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition  Height="*"/>
               </Grid.RowDefinitions>
-              <Grid IsVisible="{Binding !AllStakePools.Count }">
+
+              <Grid Grid.Row="0" IsVisible="{Binding !AllStakePools.Count }">
                 <TextBlock Text="Fetching Stake Pools from servers (about 100mb).. can take few minutes. Be patient, be fair!" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </Grid>
+
+              <StackPanel Orientation="Horizontal" Grid.Row="0" IsVisible="{Binding !!BlockChainCache.StakePools.Count }">
+                <TextBlock Text="Stake pool list is outdated! In the background we are fetching new data! This list is from: " FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding BlockChainCache.CacheDate}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
+              </StackPanel>
+
               <TabControl Grid.Row="1" IsVisible="{Binding !!AllStakePools.Count }">
                 <TabItem>
                   <TabItem.Header>
