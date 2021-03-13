@@ -1,6 +1,6 @@
-$decentralacationFactor = 0.14
+$decentralacationFactor = 0.10
 $totalStakedAda = 23000000000
-$activeStake = 100000
+$activeStake = 1000000
 
 $blockPerEpoch = 21600 * (1-$decentralacationFactor)
 

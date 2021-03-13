@@ -32,7 +32,7 @@ namespace Sprd.UI.ViewModels
 
     public class BlockChainCache
     {
-        public List<StakePool> StakePools { get; set; }
+        public ObservableCollection<StakePool> StakePools { get; set; }
         public DateTime CacheDate { get; set; }
     }
 
@@ -118,30 +118,40 @@ namespace Sprd.UI.ViewModels
 
         async Task<bool> StartServerAsync()
         {
-            var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
+            try
+            {
 
-            var allWallets = await _walletClient.GetAllWalletsAsync();
-            AllWallets = new ObservableCollection<Wallet>(allWallets);
+                var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
 
-            var allPools = await _walletClient.GetAllPoolsAsync();
-            allPools = allPools.Where(p => p.LifeTimeBlocks == 0).ToList(); //ToDO Remove when filtering is implemented: The user should be able to make custom filtering on the columns
+                var allWallets = await _walletClient.GetAllWalletsAsync();
+                AllWallets = new ObservableCollection<Wallet>(allWallets);
 
-            var blockChainCache = new BlockChainCache();
-            blockChainCache.StakePools = allPools;
-            blockChainCache.CacheDate = DateTime.Now;
-            string jsonString = JsonConvert.SerializeObject(blockChainCache);
-            await File.WriteAllTextAsync(StakePoolListDatabase, jsonString);
+                var allPools = await _walletClient.GetAllPoolsAsync();
+                allPools = allPools.Where(p => p.LifeTimeBlocks == 0).ToList(); //ToDO Remove when filtering is implemented: The user should be able to make custom filtering on the columns
 
-            //var allPoolsGrouped = allPools.GroupBy(g=>g.LifeTimeBlocks == 0).ToDictionary(x => x.Key, x => x.ToList());
-            var allStakePoolsGroups = new DataGridCollectionView(allPools);
-            //allStakePoolsGroups.GroupDescriptions.Add(new DataGridPathGroupDescription("LifeTimeBlocks"));
-            //allStakePoolsGroups.Filter = FilterProperty;
-            AllStakePools = allStakePoolsGroups;
+                var blockChainCache = new BlockChainCache();
+                blockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
+                blockChainCache.CacheDate = DateTime.Now;
+                string jsonString = JsonConvert.SerializeObject(blockChainCache);
+                await File.WriteAllTextAsync(StakePoolListDatabase, jsonString);
 
-            BlockChainCache = null;
-            OnPropertyChanged("BlockChainCache");
+                //var allPoolsGrouped = allPools.GroupBy(g=>g.LifeTimeBlocks == 0).ToDictionary(x => x.Key, x => x.ToList());
+                var allStakePoolsGroups = new DataGridCollectionView(allPools);
+                //allStakePoolsGroups.GroupDescriptions.Add(new DataGridPathGroupDescription("LifeTimeBlocks"));
+                //allStakePoolsGroups.Filter = FilterProperty;
+                AllStakePools = allStakePoolsGroups;
 
-            return true;
+                if (BlockChainCache.StakePools.Any())
+                    BlockChainCache.StakePools.Clear();
+                OnPropertyChanged("BlockChainCache");
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Fatal(e.Message);
+                return false;
+            }
         }
 
         private bool FilterProperty(object arg)

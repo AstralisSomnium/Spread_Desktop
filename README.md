@@ -26,9 +26,11 @@ Uses [Microsoft .Net Core](https://dotnet.microsoft.com/download) with UI of [Av
 + Default log location: `%TEMP%\SPRD\sprd-{Date}.log`
 + Configuration file `Sprd.UI.dll.config`
 
-### Cardano-Wallet API
+### Cardano API
 
-Used swagger to generate the API:
+All available API references for cardano, see  [here](https://docs.cardano.org/projects/adrestia/en/latest/api-reference.html)
+
+Currently this project uses only the `wallet-api` and used swagger to generate the API:
 + https://editor.swagger.io/
 + https://input-output-hk.github.io/cardano-wallet/api/edge/swagger.yaml
   + Version: 2021.2.15

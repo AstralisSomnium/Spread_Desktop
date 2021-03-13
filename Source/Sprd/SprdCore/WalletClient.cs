@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
@@ -54,14 +55,12 @@ namespace SprdCore
 
     public class Wallet
     {
-        const int lovealceToAda = 1000000;
-
         public Wallet(InlineResponse200 apiResponse)
         {
             Base = apiResponse;
 
             Name = apiResponse.Name;
-            BalanceAda = ((int) apiResponse.Balance.Available.Quantity) / lovealceToAda;
+            BalanceAda = ((int) apiResponse.Balance.Available.Quantity) / BlochChainInfo.LovelaceToAda;
             if (apiResponse.Delegation != null)
             {
                 CurrentEpochDelegationStatus = apiResponse.Delegation.Active.Status.ToString();

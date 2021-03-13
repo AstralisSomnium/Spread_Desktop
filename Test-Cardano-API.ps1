@@ -18,3 +18,11 @@ $walletExe = "C:\Program Files\Daedalus Mainnet\cardano-wallet.exe"
 #  Port 52800
 # Node socket \\.\pipe\cardano-node-mainnet
 # Wallet databases: Using directory: C:\Users\grube\AppData\Roaming\Daedalus Mainnet\wallets
+
+
+
+# Calculation for absolute stake
+$totalStaked = 22790000000
+$relativeStake = 0.010
+$absoluteStake = $totalStaked * $relativeStake
+$absoluteStake / 100 -f "d2"

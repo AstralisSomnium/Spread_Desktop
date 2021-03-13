@@ -132,20 +132,22 @@
                   </TabItem.Header>
                   <DataGrid Items="{Binding AllStakePools}">
                     <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Ticker}"
+                                            Header="Ticker"/>
                       <DataGridTextColumn Binding="{Binding Name}"
                                           Header="Pool"/>
-                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                          Header="Lifetime blocks" />
-                      <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
-                                          Header="Active Stake"/>
-                      <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
-                                          Header="Active block chance %"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeADA}"
-                                          Header="SPRD Stake"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
-                                          Header="SPRD block chance %"/>
-                      <DataGridTextColumn Binding="{Binding PoolRegistered}"
-                                          Header="Running since"/>
+                        <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                            Header="Lifetime blocks" />
+                        <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
+                                            Header="Saturation" />
+                      <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\}}"
+                                          Header="Live stake"/>
+                      <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
+                                          Header="Live block chance"/>
+                      <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\}}"
+                                          Header="SPRD stake"/>
+                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
+                                          Header="SPRD block chance"/>
                     </DataGrid.Columns>
                   </DataGrid>
                 </TabItem>
@@ -201,7 +203,7 @@
                 <DataGrid.Columns>
                   <DataGridTextColumn Binding="{Binding Name}"
                                       Header="Name"/>
-                  <DataGridTextColumn Binding="{Binding Balance}"
+                  <DataGridTextColumn Binding="{Binding BalanceAda}"
                                       Header="Balance (ADA)" />
                   <DataGridTextColumn Binding="{Binding WalletStatus}"
                                       Header="Status" />
