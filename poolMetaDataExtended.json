@@ -1,0 +1,33 @@
+{
+  "info": {
+      "url_png_icon_64x64": "https://user-images.githubusercontent.com/6730815/111051652-af65d700-844c-11eb-8a16-0ab4cf71a5e0.png",
+      "url_png_logo": "https://user-images.githubusercontent.com/6730815/111051634-82192900-844c-11eb-8335-e6204a48b0f4.png",
+      "location": "South Tyrol, Italy",
+      "social": {
+          "twitter_handle": "",
+          "telegram_handle": "https://t.me/SprdStakePool",
+          "facebook_handle": "",
+          "youtube_handle": "",
+          "twitch_handle": "",
+          "discord_handle": "",
+          "github_handle": "https://github.com/AstralisSomnium/Spread_Desktop"
+      },
+      "company": {
+          "name": "",
+          "addr": "",
+          "city": "",
+          "country": "Italy",
+          "company_id": "",
+          "vat_id": ""
+      },
+      "about": {
+          "me": "Managed by Patrick Gruber, a long-time professional software engeneer with a passion for backdoors and reverse engeneering. Invested in cryptos since 2017 and believes in the future for Cardano! His attitude is: 'Be the change you want to see in the world!'",
+          "server": "Cloud infrastructure in Germany: 6 cores 16 GB RAM, SSD and runs on Linux with 400 Mbit/s and backed up with UPS. Very restrictive access and hardend extreme for the highest security! 99% Uptime!",
+          "company": ""
+      },
+      "rss": ""
+  },
+  "my-pool-ids": {
+      "0": "2064da38531dad327135edd98003032cefa059c4c8c50c2b0440c63d"
+  }
+}
