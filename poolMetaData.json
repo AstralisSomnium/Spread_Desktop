@@ -1,7 +1,0 @@
-{
-  "name": "SPREAD fairness - Stake pool",
-  "description": "We do it for a fair world! The goal is that every stake pool mints a block (check the website). You get rewards when we reach like 1.5m active stake, support us now. Be fair, thanks!",
-  "ticker": "SPRD",
-  "homepage": "http://sprd-pool.org/",
-  "extended": "https://raw.githubusercontent.com/AstralisSomnium/Spread_Desktop/master/poolMetaDataExtended.json"
-}
