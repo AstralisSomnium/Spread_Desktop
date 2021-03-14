@@ -29,6 +29,10 @@ namespace IO.Swagger.Model
     [DataContract]
         public partial class StakePoolApiResponse :  IEquatable<StakePoolApiResponse>, IValidatableObject
     {
+        public StakePoolApiResponse()
+        {
+        }
+
         /// <summary>
         /// Defines Flags
         /// </summary>

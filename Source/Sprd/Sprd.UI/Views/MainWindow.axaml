@@ -12,7 +12,7 @@
         WindowState="Maximized"
         x:Class="Sprd.UI.Views.MainWindow"
         Icon="/Assets/Sprd_Logo.ico"
-        Title="SPRD for CARDANO: Every pool mints soon a block!"
+        Title="SPRD for CARDANO: Every pool mints a block soon"
         >
   <Window.Styles>
     <Styles>
@@ -113,7 +113,7 @@
                 <RowDefinition  Height="*"/>
               </Grid.RowDefinitions>
 
-              <Grid Grid.Row="0" IsVisible="{Binding !AllStakePools.Count }">
+              <Grid Grid.Row="0" IsVisible="{Binding ShowCaching }">
                 <TextBlock Text="Fetching Stake Pools from servers (about 100mb).. can take few minutes. Be patient, be fair!" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </Grid>
 
@@ -130,25 +130,27 @@
                       <TextBlock Text="0 Blocks" Foreground="Red"/>
                     </StackPanel>
                   </TabItem.Header>
-                  <DataGrid Items="{Binding AllStakePools}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Ticker}"
-                                            Header="Ticker"/>
-                      <DataGridTextColumn Binding="{Binding Name}"
-                                          Header="Pool"/>
-                        <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                            Header="Lifetime blocks" />
-                        <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
-                                            Header="Saturation" />
-                      <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\}}"
-                                          Header="Live stake"/>
-                      <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
-                                          Header="Live block chance"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\}}"
-                                          Header="SPRD stake"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
-                                          Header="SPRD block chance"/>
-                    </DataGrid.Columns>
+                  <DataGrid Items="{Binding AllZeroStakePools}">
+                      <DataGrid.Columns>
+                          <DataGridTextColumn Binding="{Binding Ticker}"
+                                              Header="Ticker"/>
+                          <DataGridTextColumn Binding="{Binding Name}"
+                                              Header="Pool"/>
+                          <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                              Header="LTB" />
+                          <DataGridTextColumn Binding="{Binding MissingAdaForBlock, StringFormat=\{0:N0\}}"
+                                              Header="Missing ADA"/>
+                          <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
+                                              Header="SPRD block chance"/>
+                          <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
+                                              Header="Live block chance"/>
+                          <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\}}"
+                                              Header="SPRD stake"/>
+                          <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\}}"
+                                              Header="Live stake"/>
+                          <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
+                                              Header="Saturation" />
+                      </DataGrid.Columns>
                   </DataGrid>
                 </TabItem>
                 <TabItem>
@@ -160,21 +162,24 @@
                   </TabItem.Header>
                   <DataGrid IsReadOnly="True" Items="{Binding AlmostFundedPools}">
                     <DataGrid.Columns>
-                      <DataGridTextColumn Binding="{Binding Name}"
-                                          Header="Pool"/>
-
-                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                          Header="Lifetime blocks" />
-                      <DataGridTextColumn Binding="{Binding ActiveStakeAda}"
-                                          Header="Active Stake"/>
-                      <DataGridTextColumn Binding="{Binding ActiveBlockChance}"
-                                          Header="Active block chance %"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeADA}"
-                                          Header="SPRD Stake"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance}"
-                                          Header="SPRD block chance %"/>
-                      <DataGridTextColumn Binding="{Binding PoolRegistered}"
-                                          Header="Running since"/>
+                        <DataGridTextColumn Binding="{Binding Ticker}"
+                                            Header="Ticker"/>
+                        <DataGridTextColumn Binding="{Binding Name}"
+                                            Header="Pool"/>
+                        <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                            Header="LTB" />
+                        <DataGridTextColumn Binding="{Binding MissingAdaForBlock, StringFormat=\{0:N0\}}"
+                                            Header="Missing ADA"/>
+                        <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
+                                            Header="SPRD block chance"/>
+                        <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
+                                            Header="Live block chance"/>
+                        <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\}}"
+                                            Header="SPRD stake"/>
+                        <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\}}"
+                                            Header="Live stake"/>
+                        <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
+                                            Header="Saturation" />
                     </DataGrid.Columns>
                   </DataGrid>
                 </TabItem>
@@ -239,7 +244,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition  Height="*"/>
               </Grid.RowDefinitions>
-              <TextBlock Text="Last committed ADA by SPRD" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+              <TextBlock Text="Recently committed ADA with SPRD.exe" FontSize="17" Margin="24, 5,0,5"></TextBlock>
 
               <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools}">
                 <DataGrid.Columns>
@@ -254,7 +259,7 @@
                 </DataGrid.Columns>
               </DataGrid>
 
-              <TextBlock Grid.Row="2" Text="Last SPREAD for Pools" FontSize="17" Margin="24, 5,0,5" />
+              <TextBlock Grid.Row="2" Text="Last succesfully funded Pools" FontSize="17" Margin="24, 5,0,5" />
 
               <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastSpreadPools}">
                 <DataGrid.Columns>

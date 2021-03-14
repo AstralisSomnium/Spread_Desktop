@@ -9,6 +9,8 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -27,7 +29,7 @@ namespace Sprd.UI.ViewModels
     public interface IMainWindowViewModel
     {
         ObservableCollection<Wallet> AllWallets { get; set; }
-        Avalonia.Collections.DataGridCollectionView AllStakePools { get; set; }
+        ObservableCollection<StakePool> AllStakePools { get; set; }
     }
 
     public class BlockChainCache
@@ -41,7 +43,7 @@ namespace Sprd.UI.ViewModels
         readonly Window _desktopMainWindow;
 
         string StakePoolListDatabase =
-            System.IO.Path.Join(System.IO.Path.GetTempPath(), "SPRD_StakePoolList_Cache.json");
+            System.IO.Path.Join(System.IO.Path.GetTempPath(), "SPRD\\SPRD_StakePoolList_Cache.json");
 
         private readonly int _nodePort = 41799;
         readonly CardanoServer _cardanoServer;
@@ -60,22 +62,51 @@ namespace Sprd.UI.ViewModels
                 OnPropertyChanged();
             }
         }
-        
-        public BlockChainCache BlockChainCache { get; set; }
 
-        private Avalonia.Collections.DataGridCollectionView _allStakePools;
-        public Avalonia.Collections.DataGridCollectionView AllStakePools
+        public bool ShowCaching
         {
             get
             {
-                return _allStakePools;
+                return !AllStakePools.Any() && !BlockChainCache.StakePools.Any();
+            }
+        }
+
+        public BlockChainCache BlockChainCache { get; set; }
+
+        private ObservableCollection<StakePool> _allStakePools;
+        public ObservableCollection<StakePool> AllStakePools
+        {
+            get
+            {
+                return new ObservableCollection<StakePool>(_allStakePools.OrderByDescending(x => x.Saturation));
             }
             set
             {
                 _allStakePools = value;
                 OnPropertyChanged();
+                OnPropertyChanged("AllZeroStakePools");
+                OnPropertyChanged("AlmostFundedPools");
             }
         }
+        
+        public Avalonia.Collections.DataGridCollectionView AllZeroStakePools
+        {
+            get
+            {
+                return new DataGridCollectionView(AllStakePools.Where(p =>
+                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance < 0.5 || p.SprdStakeBlockChance < 0.5)));
+            }
+        }
+        
+        public Avalonia.Collections.DataGridCollectionView AlmostFundedPools
+        {
+            get
+            {
+                return new DataGridCollectionView(AllStakePools.Where(p =>
+                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance >= 0.5 || p.SprdStakeBlockChance >= 0.5)));
+            }
+        }
+
 
         public MainWindowViewModel()
         {
@@ -86,17 +117,20 @@ namespace Sprd.UI.ViewModels
             _desktopMainWindow = desktopMainWindow;
 
             BlockChainCache = new BlockChainCache();
+            BlockChainCache.StakePools = new ObservableCollection<StakePool>();
             var stakePoolDbFileInfo = new FileInfo(StakePoolListDatabase);
             if (stakePoolDbFileInfo.Exists)
             {
-                var jsonCacheStakePools = File.ReadAllText(StakePoolListDatabase);
-                BlockChainCache = JsonConvert.DeserializeObject<BlockChainCache>(jsonCacheStakePools);
-                _allStakePools = new DataGridCollectionView(BlockChainCache.StakePools);
+                var jsonCacheStakePools = File.ReadAllBytes(StakePoolListDatabase);
+                var readOnlySpan = new ReadOnlySpan<byte>(jsonCacheStakePools);
+                BlockChainCache = JsonSerializer.Deserialize<BlockChainCache>(readOnlySpan);
+                
+                _allStakePools = BlockChainCache.StakePools;
                 OnPropertyChanged("BlockChainCache");
             }
             else
             {
-                _allStakePools = new Avalonia.Collections.DataGridCollectionView(Enumerable.Empty<StakePool>());
+                _allStakePools = new ObservableCollection<StakePool>();
             }
             _allWallets = new ObservableCollection<Wallet>();
 
@@ -127,19 +161,25 @@ namespace Sprd.UI.ViewModels
                 AllWallets = new ObservableCollection<Wallet>(allWallets);
 
                 var allPools = await _walletClient.GetAllPoolsAsync();
-                allPools = allPools.Where(p => p.LifeTimeBlocks == 0).ToList(); //ToDO Remove when filtering is implemented: The user should be able to make custom filtering on the columns
 
-                var blockChainCache = new BlockChainCache();
-                blockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
-                blockChainCache.CacheDate = DateTime.Now;
-                string jsonString = JsonConvert.SerializeObject(blockChainCache);
-                await File.WriteAllTextAsync(StakePoolListDatabase, jsonString);
+                BlockChainCache = new BlockChainCache();
+                BlockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
+                BlockChainCache.CacheDate = DateTime.Now;
+                string jsonString = JsonConvert.SerializeObject(BlockChainCache);
+
+                byte[] jsonUtf8Bytes;
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+                jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(BlockChainCache, options);
+                await File.WriteAllBytesAsync(StakePoolListDatabase, jsonUtf8Bytes);
 
                 //var allPoolsGrouped = allPools.GroupBy(g=>g.LifeTimeBlocks == 0).ToDictionary(x => x.Key, x => x.ToList());
                 var allStakePoolsGroups = new DataGridCollectionView(allPools);
                 //allStakePoolsGroups.GroupDescriptions.Add(new DataGridPathGroupDescription("LifeTimeBlocks"));
                 //allStakePoolsGroups.Filter = FilterProperty;
-                AllStakePools = allStakePoolsGroups;
+                AllStakePools = new ObservableCollection<StakePool>(allPools);
 
                 if (BlockChainCache.StakePools.Any())
                     BlockChainCache.StakePools.Clear();

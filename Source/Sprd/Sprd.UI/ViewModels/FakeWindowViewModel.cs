@@ -22,7 +22,7 @@ namespace Sprd.UI
     public static class DesignData
     {
         public static IMainWindowViewModel FakeViewModel { get; } = new FakeMainWindowViewModel(
-            new DataGridCollectionView(new[]
+            new ObservableCollection<StakePool>(new[]
             {
                 new StakePool(new StakePoolApiResponse("MyPoolId1",
                     new StakepoolsMetrics(
@@ -56,9 +56,9 @@ namespace Sprd.UI
     public class FakeMainWindowViewModel : IMainWindowViewModel
     {
         public ObservableCollection<Wallet> AllWallets { get; set; }
-        public DataGridCollectionView AllStakePools { get; set; }
+        public ObservableCollection<StakePool> AllStakePools { get; set; }
 
-        public FakeMainWindowViewModel(DataGridCollectionView allStakePools)
+        public FakeMainWindowViewModel(ObservableCollection<StakePool> allStakePools)
         {
             AllStakePools = allStakePools;;
         }
