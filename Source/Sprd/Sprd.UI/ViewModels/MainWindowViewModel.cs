@@ -22,6 +22,8 @@ using Newtonsoft.Json;
 using ReactiveUI;
 using Serilog;
 using SprdCore;
+using SprdCore.Cardano;
+using SprdCore.SPRD;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Sprd.UI.ViewModels
@@ -46,6 +48,7 @@ namespace Sprd.UI.ViewModels
             System.IO.Path.Join(System.IO.Path.GetTempPath(), "SPRD\\SPRD_StakePoolList_Cache.json");
 
         private readonly int _nodePort = 41799;
+        readonly SprdServer _sprdServer;
         readonly CardanoServer _cardanoServer;
         readonly WalletClient _walletClient;
 
@@ -74,6 +77,7 @@ namespace Sprd.UI.ViewModels
         public BlockChainCache BlockChainCache { get; set; }
 
         private ObservableCollection<StakePool> _allStakePools;
+
         public ObservableCollection<StakePool> AllStakePools
         {
             get
@@ -135,7 +139,8 @@ namespace Sprd.UI.ViewModels
             _allWallets = new ObservableCollection<Wallet>();
 
             _cardanoServer = new CardanoServer();
-            _walletClient = new WalletClient(_nodePort);
+            _sprdServer = new SprdServer();
+            _walletClient = new WalletClient(_nodePort, _sprdServer);
             desktopMainWindow.Opened += StartCardanoServer;
             desktopMainWindow.Closing += WindowClosing;
         }
@@ -154,7 +159,6 @@ namespace Sprd.UI.ViewModels
         {
             try
             {
-
                 var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
 
                 var allWallets = await _walletClient.GetAllWalletsAsync();

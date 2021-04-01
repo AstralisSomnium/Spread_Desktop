@@ -16,11 +16,25 @@ using ReactiveUI;
 using Serilog;
 using Sprd.UI.ViewModels;
 using SprdCore;
+using SprdCore.Cardano;
+using SprdCore.SPRD;
 
 namespace Sprd.UI
 {
     public static class DesignData
     {
+        private static readonly IEnumerable<SprdPoolInfo> sprdPoolInfos = new List<SprdPoolInfo>
+        {
+            new SprdPoolInfo
+            {
+                pool_id = "MyPoolId1",
+                _id = "1",
+                wallet_id = "w1",
+                commited_ada = 100.23m,
+                commiter_email = "gruberpatrickit@gmail.com"
+            }
+        };
+
         public static IMainWindowViewModel FakeViewModel { get; } = new FakeMainWindowViewModel(
             new ObservableCollection<StakePool>(new[]
             {
@@ -35,8 +49,8 @@ namespace Sprd.UI
                     new StakepoolsPledge(1000000, StakepoolsPledge.UnitEnum.Lovelace),
                     new StakepoolsMetadata("SPRD", "Spread Fairness - Stake Pool",
                         "We do it for a fair world! The goal is that every stake pool mints a block (check the website). You get rewards when we reach like 1.5m active stake, support us now. Be fair, thanks!",
-                        "http://sprd-pool.org/"), new StakepoolsRetirement(0, DateTime.Now.ToLongDateString()),
-                    new List<StakePoolApiResponse.FlagsEnum>())),
+                        "https://sprd-pool.org/"), new StakepoolsRetirement(0, DateTime.Now.ToLongDateString()),
+                    new List<StakePoolApiResponse.FlagsEnum>()), sprdPoolInfos),
                 new StakePool(new StakePoolApiResponse("MyPoolId2",
                     new StakepoolsMetrics(
                         new StakepoolsMetricsNonMyopicMemberRewards(0,
@@ -49,7 +63,7 @@ namespace Sprd.UI
                     new StakepoolsMetadata("SPRD2", "Spread Fairness - Stake Pool",
                         "We do it for a fair world! The goal is that every stake pool mints a block (check the website). You get rewards when we reach like 1.5m active stake, support us now. Be fair, thanks!",
                         "http://sprd-pool.org/"), new StakepoolsRetirement(0, DateTime.Now.ToLongDateString()),
-                    new List<StakePoolApiResponse.FlagsEnum>())),
+                    new List<StakePoolApiResponse.FlagsEnum>()),sprdPoolInfos)
             }));
     }
 

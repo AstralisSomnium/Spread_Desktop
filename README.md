@@ -4,12 +4,13 @@ We do 2 things:
 1. Developing Software to help pool operators
 2. Operating a Cardano Stake Pool: [[SPRD]](https://adapools.org/pool/2064da38531dad327135edd98003032cefa059c4c8c50c2b0440c63d)
 
-Visit the website: http://sprd-pool.org/
+Visit the website: https://sprd-pool.org/
 
 # 1. Software
 
 Spread.exe, spreads the cardano rewards to be fair! 
 The goal is that every pool mints a block!!
+
 
 ## No release so far!
 

@@ -1,4 +1,4 @@
-﻿namespace SprdCore
+﻿namespace SprdCore.Cardano
 {
     public static class BlochChainInfo
     {

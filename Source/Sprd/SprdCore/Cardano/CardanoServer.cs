@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -7,9 +6,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Serilog;
-using SprdCore.Annotations;
 
-namespace SprdCore
+namespace SprdCore.Cardano
 {
     public class CardanoServer : WalletBase, INotifyPropertyChanged
     {

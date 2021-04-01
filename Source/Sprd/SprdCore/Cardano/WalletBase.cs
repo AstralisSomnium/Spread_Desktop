@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using Serilog;
 
-namespace SprdCore
+namespace SprdCore.Cardano
 {
     public abstract class WalletBase : IDisposable
     {

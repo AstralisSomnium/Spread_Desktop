@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using Serilog;
+using SprdCore.SPRD;
 
-namespace SprdCore
+namespace SprdCore.Cardano
 {
     public class WalletClient : WalletBase
     {
         readonly int _port;
+        private readonly ISprdServer _sprdServer;
 
-        public WalletClient(int port)
+        public WalletClient(int port, ISprdServer sprdServer)
         {
             _port = port;
+            _sprdServer = sprdServer;
         }
 
         public async Task<List<StakePool>> GetAllPoolsAsync()
@@ -25,10 +28,12 @@ namespace SprdCore
             var alListStakePools = await stakePoolApi.ListStakePoolsAsync(0);
             Log.Information("Found {0} stake pools", alListStakePools.Count);
 
+
+            var sprdPoolInfos = await _sprdServer.GetPoolInformationsAsync();
             var myStakePools = new List<StakePool>();
             foreach (var stakePoolApiResponse in alListStakePools)
             {
-                myStakePools.Add(new StakePool(stakePoolApiResponse));
+                myStakePools.Add(new StakePool(stakePoolApiResponse, sprdPoolInfos));
             }
             return myStakePools;
         }

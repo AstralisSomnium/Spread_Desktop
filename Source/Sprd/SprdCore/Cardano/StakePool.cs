@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using IO.Swagger.Model;
+using SprdCore.SPRD;
 
-namespace SprdCore
+namespace SprdCore.Cardano
 {
     public class StakePool
     {
@@ -9,7 +12,7 @@ namespace SprdCore
         {
         }
 
-        public StakePool(StakePoolApiResponse apiResponse)
+        public StakePool(StakePoolApiResponse apiResponse, IEnumerable<SprdPoolInfo> sprdPoolInfos)
         {
             Base = apiResponse;
 
@@ -27,7 +30,14 @@ namespace SprdCore
             ActiveStakeAda = Convert.ToInt64(BlochChainInfo.GetSaturationAda() * apiResponse.Metrics.Saturation);
             ActiveBlockChance = BlochChainInfo.GetBlockChance(ActiveStakeAda);
 
-            SprdStakeADA = Convert.ToInt64(ActiveStakeAda *0.23); // Its just a dummy implementaiton with 23 % toDo!
+            var sprdPoolInfosForThisPool = sprdPoolInfos.Where(p => p.pool_id == apiResponse.Id).ToList();
+            if (sprdPoolInfosForThisPool.Any())
+            {
+                SprdStakeADA = Convert.ToInt64(sprdPoolInfosForThisPool.Sum(p=>p.commited_ada));
+            }
+            else
+                SprdStakeADA = 0;
+
             var missingAda = BlochChainInfo.GetMinimumAdaForOneBlock() - (ActiveStakeAda + SprdStakeADA);
             if (missingAda < 0)
                 missingAda = 0;

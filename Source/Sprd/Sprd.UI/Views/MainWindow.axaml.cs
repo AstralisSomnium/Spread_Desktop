@@ -40,7 +40,7 @@ namespace Sprd.UI.Views
 
         void VisitSpread_FromMenu(object? sender, RoutedEventArgs e)
         {
-            OpenUrl("http://sprd-pool.org/");
+            OpenUrl("https://sprd-pool.org/");
         }
 
         void OpenUrl(string url)
