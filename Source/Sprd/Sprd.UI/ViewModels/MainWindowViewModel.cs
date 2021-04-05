@@ -7,6 +7,7 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using MessageBox.Avalonia.Enums;
@@ -152,11 +153,11 @@ namespace Sprd.UI.ViewModels
             _allWallets = new ObservableCollection<Wallet>();
 
 
-            // _cardanoServer = new CardanoServer();
+            _cardanoServer = new CardanoServer();
             _sprdServer = new SprdServer();
-            // _walletClient = new WalletClient(_nodePort, _sprdServer);
-            // desktopMainWindow.Opened += StartCardanoServer;
-            // desktopMainWindow.Closing += WindowClosing;
+            _walletClient = new WalletClient(_nodePort, _sprdServer);
+            desktopMainWindow.Opened += StartCardanoServer;
+            desktopMainWindow.Closing += WindowClosing;
         }
 
         public ReactiveCommand<Unit, Unit> SpreadAdaCommand { get; }
@@ -217,6 +218,19 @@ namespace Sprd.UI.ViewModels
             try
             {
                 var cardanoServerConsoleProcess = _cardanoServer.Start(_nodePort);
+            }
+            catch (Exception e)
+            {
+                var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Daedalus not running", string.Format("{0}{1}Do you want start Daedalus automatically now? SPRD requires Daedalus to be run. You can start it also manually!", e.Message, Environment.NewLine), ButtonEnum.YesNo, Icon.Stop);
+                var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
+                if (msgBoxResult == ButtonResult.No)
+                    _desktopMainWindow.Close();
+                _cardanoServer.StartDaedalus();
+                _cardanoServer.Start(_nodePort);
+            }
+
+            try
+            {
 
                 var allWallets = await _walletClient.GetAllWalletsAsync();
                 AllWallets = new ObservableCollection<Wallet>(allWallets);

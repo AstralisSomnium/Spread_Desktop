@@ -46,9 +46,9 @@
         <Setter Property="Width" Value="30" />
       </Style>
 
-        <Style Selector="StackPanel > TextBlock">
-            <Setter Property="Margin" Value="5" />
-        </Style>
+      <Style Selector="StackPanel > TextBlock">
+        <Setter Property="Margin" Value="5" />
+      </Style>
     </Styles>
   </Window.Styles>
 
@@ -125,47 +125,47 @@
                 <TextBlock Text="{Binding BlockChainCache.CacheDate}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </StackPanel>
 
-                <Expander Grid.Row="1" Margin="10">
-                    <Expander.Header>
-                        <DockPanel VerticalAlignment="Stretch">
-                            <TextBlock FontStyle="Italic" Foreground="Green">SPRD to Pool</TextBlock>
-                        </DockPanel>
-                    </Expander.Header>
-                  <Grid Margin="15, 0, 15, 0" Grid.Row="1">
-                      <Grid.RowDefinitions>
-                          <RowDefinition Height="*" />
-                          <RowDefinition Height="*" />
-                      </Grid.RowDefinitions>
-                      <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="10" />
+              <Expander Grid.Row="1" Margin="10">
+                <Expander.Header>
+                  <DockPanel VerticalAlignment="Stretch">
+                    <TextBlock FontStyle="Italic" Foreground="Green">SPRD to Pool</TextBlock>
+                  </DockPanel>
+                </Expander.Header>
+                <Grid Margin="15, 0, 15, 0" Grid.Row="1">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
 
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
 
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
 
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
 
-                          <ColumnDefinition Width="*" />
-                      </Grid.ColumnDefinitions>
-                      <TextBlock Grid.Row="0" Grid.Column="0" Text="Pool" Foreground="Black" />
-                      <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="0" Text="{Binding Path=SprdSelection.Pool.Name}" Foreground="Black" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Row="0" Grid.Column="0" Text="Pool" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="0" Text="{Binding Path=SprdSelection.Pool.Name}" Foreground="Black" />
 
-                      <TextBlock Grid.Row="0" Grid.Column="2" Text="Wallet" Foreground="Black" />
-                      <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="2" Text="{Binding Path=SprdSelection.Wallet.Name}" Foreground="Black" />
+                  <TextBlock Grid.Row="0" Grid.Column="2" Text="Wallet" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="2" Text="{Binding Path=SprdSelection.Wallet.Name}" Foreground="Black" />
 
-                      <TextBlock Grid.Row="0" Grid.Column="4" Text="Ada Balance" Foreground="Black" />
-                      <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.BalanceAda}" Foreground="Black" />
+                  <TextBlock Grid.Row="0" Grid.Column="4" Text="Ada Balance" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.BalanceAda}" Foreground="Black" />
 
-                      <TextBlock  Grid.Row="0" Grid.Column="6"  Text="Email to notify*" Foreground="Black" />
-                      <TextBox Grid.Row="1" Grid.Column="6" Text="{Binding Path=SprdSelection.NotifyEmail}" Foreground="Black" />
+                  <TextBlock  Grid.Row="0" Grid.Column="6"  Text="Email to notify*" Foreground="Black" />
+                  <TextBox Grid.Row="1" Grid.Column="6" Text="{Binding Path=SprdSelection.NotifyEmail}" Foreground="Black" />
 
-                      <Button Grid.Row="1" Grid.Column="8" Content="SPRD your ADA now" Command="{Binding SpreadAdaCommand}" IsDefault="True" />
-                  </Grid>
-                </Expander>
+                  <Button Grid.Row="1" Grid.Column="8" Content="SPRD your ADA now" Command="{Binding SpreadAdaCommand}" IsDefault="True" />
+                </Grid>
+              </Expander>
 
               <TabControl Grid.Row="2" IsVisible="{Binding !!AllStakePools.Count }">
 
@@ -182,20 +182,20 @@
                                           Header="Ticker"/>
                       <DataGridTextColumn Binding="{Binding Name}"
                                           Header="Pool"/>
-                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                          Header="LTB" />
-                      <DataGridTextColumn Binding="{Binding MissingAdaForBlock, StringFormat=\{0:N0\} ₳}"
-                                          Header="Missing ADA"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
-                                          Header="SPRD block chance"/>
+                      <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
+                                          Header="Saturation" />
+                      <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\} ₳}"
+                                          Header="Live stake"/>
                       <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
                                           Header="Live block chance"/>
                       <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\} ₳}"
                                           Header="SPRD stake"/>
-                      <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\} ₳}"
-                                          Header="Live stake"/>
-                      <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
-                                          Header="Saturation" />
+                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
+                                          Header="SPRD block chance"/>
+                      <DataGridTextColumn Binding="{Binding MissingAdaForBlock, StringFormat=\{0:N0\} ₳}"
+                                          Header="Missing ADA"/>
+                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                          Header="LTB" />
                     </DataGrid.Columns>
                   </DataGrid>
                 </TabItem>
@@ -208,24 +208,24 @@
                   </TabItem.Header>
                   <DataGrid Items="{Binding AlmostFundedPools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" SelectedIndex="0">
                     <DataGrid.Columns>
-                      <DataGridTextColumn Binding="{Binding Ticker}"
-                                          Header="Ticker"/>
-                      <DataGridTextColumn Binding="{Binding Name}"
-                                          Header="Pool"/>
-                      <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
-                                          Header="LTB" />
-                      <DataGridTextColumn Binding="{Binding MissingAdaForBlock, StringFormat=\{0:N0\} ₳}"
-                                          Header="Missing ADA"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
-                                          Header="SPRD block chance"/>
-                      <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
-                                          Header="Live block chance"/>
-                      <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\} ₳}"
-                                          Header="SPRD stake"/>
-                      <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\} ₳}"
-                                          Header="Live stake"/>
-                      <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
-                                          Header="Saturation" />
+                        <DataGridTextColumn Binding="{Binding Ticker}"
+                                            Header="Ticker"/>
+                        <DataGridTextColumn Binding="{Binding Name}"
+                                            Header="Pool"/>
+                        <DataGridTextColumn Binding="{Binding Saturation, StringFormat=\{0:P2\}}"
+                                            Header="Saturation" />
+                        <DataGridTextColumn Binding="{Binding ActiveStakeAda, StringFormat=\{0:N0\} ₳}"
+                                            Header="Live stake"/>
+                        <DataGridTextColumn Binding="{Binding ActiveBlockChance, StringFormat=\{0:P0\}}"
+                                            Header="Live block chance"/>
+                        <DataGridTextColumn Binding="{Binding SprdStakeADA, StringFormat=\{0:N0\} ₳}"
+                                            Header="SPRD stake"/>
+                        <DataGridTextColumn Binding="{Binding SprdStakeBlockChance, StringFormat=\{0:P0\}}"
+                                            Header="SPRD block chance"/>
+                        <DataGridTextColumn Binding="{Binding MissingAdaForBlock, StringFormat=\{0:N0\} ₳}"
+                                            Header="Missing ADA"/>
+                        <DataGridTextColumn Binding="{Binding LifeTimeBlocks}"
+                                            Header="LTB" />
                     </DataGrid.Columns>
                   </DataGrid>
                 </TabItem>

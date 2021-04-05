@@ -13,22 +13,36 @@ namespace SprdCore.Cardano
     {
         public Process Start(int port)
         {
-            var startWithDaedalus = StartWithDaedalus(port);
+            var startWithDaedalus = ConnectToDaedalus(port);
 
             return startWithDaedalus;
         }
 
-        Process StartWithDaedalus(int port)
+        public Process StartDaedalus()
+        {
+            Log.Verbose("Starting Daedalus now...");
+            var daedalusExePath = GetDaedalusExePath();
+            var process = Process.Start(daedalusExePath.FullName);
+
+            var timeout = 25 * 1000;
+            Thread.Sleep(timeout);
+            return process;
+        }
+
+        FileInfo GetDaedalusExePath()
         {
             Log.Verbose("Searching Daedalus installation...");
             var DaedalusExePath = new FileInfo(string.Format("{0}cardano-launcher.exe", DaedalusInstallPath));
-            if (!DaedalusExePath.Exists)
-            {
-                var errorMsg = string.Format("Not found Daedalus installation: {0} ", DaedalusExePath.FullName);
-                Log.Error(errorMsg);
-                throw new Exception(errorMsg);
-            }
+            if (DaedalusExePath.Exists)
+                return DaedalusExePath;
+            
+            var errorMsg = string.Format("Not found Daedalus installation: {0} ", DaedalusExePath.FullName);
+            Log.Error(errorMsg);
+            throw new Exception(errorMsg);
+        }
 
+        Process ConnectToDaedalus(int port)
+        {
             Log.Verbose("Found Daedalus installation");
             var currentProcesses = Process.GetProcesses();
             var DaedalusProcesses = currentProcesses.Where(p => p.ProcessName.StartsWith("Daedalus"));
@@ -38,11 +52,9 @@ namespace SprdCore.Cardano
             }
             else
             {
-                Log.Verbose("Starting Daedalus now...");
-                var process = Process.Start(DaedalusExePath.FullName);
-
-                var timeout = 14 * 1000;
-                Thread.Sleep(timeout);
+                var errorMessage = "Failed to connect to Daedalus node! Could not find the running application";
+                Log.Error(errorMessage);
+                throw new Exception(errorMessage);
             }
             Log.Verbose("Starting server...");
 
