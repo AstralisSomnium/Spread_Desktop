@@ -19,8 +19,6 @@ $walletExe = "C:\Program Files\Daedalus Mainnet\cardano-wallet.exe"
 # Node socket \\.\pipe\cardano-node-mainnet
 # Wallet databases: Using directory: C:\Users\grube\AppData\Roaming\Daedalus Mainnet\wallets
 
-
-
 # Calculation for absolute stake
 $totalStaked = 22790000000
 $relativeStake = 0.010

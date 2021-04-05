@@ -28,7 +28,6 @@ namespace Sprd.UI
             new SprdPoolInfo
             {
                 pool_id = "MyPoolId1",
-                _id = "1",
                 wallet_id = "w1",
                 commited_ada = 100.23m,
                 commiter_email = "gruberpatrickit@gmail.com"

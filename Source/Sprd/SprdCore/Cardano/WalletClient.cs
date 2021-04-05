@@ -60,6 +60,10 @@ namespace SprdCore.Cardano
 
     public class Wallet
     {
+        public Wallet()
+        {
+        }
+
         public Wallet(InlineResponse200 apiResponse)
         {
             Base = apiResponse;
@@ -101,7 +105,7 @@ namespace SprdCore.Cardano
         }
 
         public InlineResponse200 Base { get; private set; }
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public decimal BalanceAda { get; private set; }
         public string WalletStatus { get; private set; }
         public string CurrentEpochDelegationStatus { get; private set; }

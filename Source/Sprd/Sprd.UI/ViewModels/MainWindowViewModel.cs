@@ -1,27 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
+using System.Reactive;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using DynamicData;
-using IO.Swagger.Api;
-using IO.Swagger.Model;
+using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
 using ReactiveUI;
 using Serilog;
-using SprdCore;
 using SprdCore.Cardano;
 using SprdCore.SPRD;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -44,8 +35,7 @@ namespace Sprd.UI.ViewModels
     {
         readonly Window _desktopMainWindow;
 
-        string StakePoolListDatabase =
-            System.IO.Path.Join(System.IO.Path.GetTempPath(), "SPRD\\SPRD_StakePoolList_Cache.json");
+        readonly string _stakePoolListDatabase = System.IO.Path.Join(System.IO.Path.GetTempPath(), "SPRD\\SPRD_StakePoolList_Cache.json");
 
         private readonly int _nodePort = 41799;
         readonly SprdServer _sprdServer;
@@ -62,6 +52,20 @@ namespace Sprd.UI.ViewModels
             set
             {
                 _allWallets = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private SprdSelection _sprdSelection;
+        public SprdSelection SprdSelection
+        {
+            get
+            {
+                return _sprdSelection;
+            }
+            set
+            {
+                _sprdSelection = value;
                 OnPropertyChanged();
             }
         }
@@ -92,8 +96,8 @@ namespace Sprd.UI.ViewModels
                 OnPropertyChanged("AlmostFundedPools");
             }
         }
-        
-        public Avalonia.Collections.DataGridCollectionView AllZeroStakePools
+
+        public DataGridCollectionView AllZeroStakePools
         {
             get
             {
@@ -101,8 +105,8 @@ namespace Sprd.UI.ViewModels
                     p.LifeTimeBlocks == 0 && (p.ActiveBlockChance < 0.5 || p.SprdStakeBlockChance < 0.5)));
             }
         }
-        
-        public Avalonia.Collections.DataGridCollectionView AlmostFundedPools
+
+        public DataGridCollectionView AlmostFundedPools
         {
             get
             {
@@ -118,17 +122,26 @@ namespace Sprd.UI.ViewModels
 
         public MainWindowViewModel(Window desktopMainWindow)
         {
+
+
             _desktopMainWindow = desktopMainWindow;
+            _sprdSelection = new SprdSelection
+            {
+                Pool = new StakePool { Name = "<Select Pool>" },
+                Wallet = new Wallet { Name = "<Select Wallet>" },
+            };
+
+            SpreadAdaCommand = ReactiveCommand.Create(() => { SpreadAda(); });
 
             BlockChainCache = new BlockChainCache();
             BlockChainCache.StakePools = new ObservableCollection<StakePool>();
-            var stakePoolDbFileInfo = new FileInfo(StakePoolListDatabase);
+            var stakePoolDbFileInfo = new FileInfo(_stakePoolListDatabase);
             if (stakePoolDbFileInfo.Exists)
             {
-                var jsonCacheStakePools = File.ReadAllBytes(StakePoolListDatabase);
+                var jsonCacheStakePools = File.ReadAllBytes(_stakePoolListDatabase);
                 var readOnlySpan = new ReadOnlySpan<byte>(jsonCacheStakePools);
                 BlockChainCache = JsonSerializer.Deserialize<BlockChainCache>(readOnlySpan);
-                
+
                 _allStakePools = BlockChainCache.StakePools;
                 OnPropertyChanged("BlockChainCache");
             }
@@ -138,11 +151,55 @@ namespace Sprd.UI.ViewModels
             }
             _allWallets = new ObservableCollection<Wallet>();
 
-            _cardanoServer = new CardanoServer();
+
+            // _cardanoServer = new CardanoServer();
             _sprdServer = new SprdServer();
-            _walletClient = new WalletClient(_nodePort, _sprdServer);
-            desktopMainWindow.Opened += StartCardanoServer;
-            desktopMainWindow.Closing += WindowClosing;
+            // _walletClient = new WalletClient(_nodePort, _sprdServer);
+            // desktopMainWindow.Opened += StartCardanoServer;
+            // desktopMainWindow.Closing += WindowClosing;
+        }
+
+        public ReactiveCommand<Unit, Unit> SpreadAdaCommand { get; }
+
+        async void SpreadAda()
+        {
+            try
+            {
+                Log.Verbose("Clicked button: SpreadAda");
+                if (SprdSelection.Wallet.Name == string.Empty || SprdSelection.Wallet.Name == "<Select Wallet>" || SprdSelection.Pool.Name == string.Empty || SprdSelection.Pool.Name == "<Select Pool>" || SprdSelection.NotifyEmail == string.Empty)
+                {
+                    var warnMessage = string.Format(
+                        "Thanks for your engagement but spreading your ADA failed because some data is missing! Select a pool, wallet and insert an email address and try again. If the problem persists contact support@sprd-pool.org");
+                    
+                    Log.Warning(warnMessage);
+                    var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Warning);
+                    var msgBoxResult = msgBox.ShowDialog(_desktopMainWindow);
+                    return;
+                }
+
+                var sprdInfo = new SprdPoolInfo()
+                {
+                    commited_ada = SprdSelection.Wallet.BalanceAda,
+                    commiter_email = SprdSelection.NotifyEmail,
+                    pool_id = SprdSelection.Pool.Base.Id,
+                    wallet_id = SprdSelection.Wallet.Base.Id
+                };
+                var response = await _sprdServer.AddNewPoolInfoAsync(sprdInfo);
+                var msgBoxSuccess = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Sucessful spread",
+                    string.Format(
+                        "Thanks for supporting the pool {0}{1}You will get notified when enough other delegators SPRD there ADA to this pool in order to be ready to mine a block!",
+                        SprdSelection.Pool.Name, Environment.NewLine), ButtonEnum.Ok, Icon.Info);
+                var msgBoxResultSuccess = await msgBoxSuccess.ShowDialog(_desktopMainWindow);
+            }
+            catch (Exception e)
+            {
+                var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Unexpected error",
+                    string.Format(
+                        "While sending your SPRD to the server following error occurred: {0}{1}If the problem persists contact support@sprd-pool.org",
+                        e.Message, Environment.NewLine), ButtonEnum.Ok, Icon.Error);
+                var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
+                Log.Logger.Fatal(e.Message);
+            }
         }
 
         void WindowClosing(object? sender, CancelEventArgs e)
@@ -177,12 +234,7 @@ namespace Sprd.UI.ViewModels
                     WriteIndented = true
                 };
                 jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(BlockChainCache, options);
-                await File.WriteAllBytesAsync(StakePoolListDatabase, jsonUtf8Bytes);
-
-                //var allPoolsGrouped = allPools.GroupBy(g=>g.LifeTimeBlocks == 0).ToDictionary(x => x.Key, x => x.ToList());
-                var allStakePoolsGroups = new DataGridCollectionView(allPools);
-                //allStakePoolsGroups.GroupDescriptions.Add(new DataGridPathGroupDescription("LifeTimeBlocks"));
-                //allStakePoolsGroups.Filter = FilterProperty;
+                await File.WriteAllBytesAsync(_stakePoolListDatabase, jsonUtf8Bytes);
                 AllStakePools = new ObservableCollection<StakePool>(allPools);
 
                 if (BlockChainCache.StakePools.Any())
@@ -193,15 +245,11 @@ namespace Sprd.UI.ViewModels
             }
             catch (Exception e)
             {
+                var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Unexpected error", string.Format("While starting the Cardano node following error occurred: {0}{1}If the problem persists contact support@sprd-pool.org", e.Message), ButtonEnum.Ok, Icon.Error);
+                var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
                 Log.Logger.Fatal(e.Message);
                 return false;
             }
-        }
-
-        private bool FilterProperty(object arg)
-        {
-            Log.Verbose("FilterProperty: " + arg);
-            return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
