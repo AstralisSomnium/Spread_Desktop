@@ -11,12 +11,11 @@ Visit the website: https://sprd-pool.org/
 Spread.exe, spreads the cardano rewards to be fair! 
 The goal is that every pool mints a block!!
 
-
 ## No release so far!
 
 At the moment we are working on the first release and now its nothing to download so far!
 
-The first software will be released mid/end of march, be exicted and click `WATCH` to this Github Repository on the right up corner. See you! 
+The first software will be released during april, be exicted and click `WATCH` to this Github Repository on the right up corner. See you! 
 
 ### Supports Windows, Linux and Mac
 
@@ -29,7 +28,7 @@ Uses [Microsoft .Net Core](https://dotnet.microsoft.com/download) with UI of [Av
 
 ### Cardano API
 
-All available API references for cardano, see  [here](https://docs.cardano.org/projects/adrestia/en/latest/api-reference.html)
+All available API references for cardano, see [here](https://docs.cardano.org/projects/adrestia/en/latest/api-reference.html)
 
 Currently this project uses only the `wallet-api` and used swagger to generate the API:
 + https://editor.swagger.io/
