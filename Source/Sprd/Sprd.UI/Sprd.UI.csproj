@@ -27,4 +27,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SprdCore\SprdCore.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="sprd-settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -5,19 +5,21 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace SprdCore.Cardano
 {
+    public class WalletSettings
+    {
+        public int Port { get; set; }
+        public string Database{ get; set; }
+        public string TokenMetadataServer { get; set; }
+        public string SyncTolerance { get; set; }
+    }
+
     public class CardanoServer : WalletBase, INotifyPropertyChanged
     {
-        public Process Start(int port)
-        {
-            var startWithDaedalus = ConnectToDaedalus(port);
-
-            return startWithDaedalus;
-        }
-
         public Process StartDaedalus()
         {
             Log.Verbose("Starting Daedalus now...");
@@ -41,38 +43,48 @@ namespace SprdCore.Cardano
             throw new Exception(errorMsg);
         }
 
-        Process ConnectToDaedalus(int port)
+        public Process ConnectToDaedalus(WalletSettings walletSettings)
         {
-            Log.Verbose("Found Daedalus installation");
+            Log.Verbose(string.Format("ConnectToDaedalus port {0}", walletSettings.Port));
             var currentProcesses = Process.GetProcesses();
-            var DaedalusProcesses = currentProcesses.Where(p => p.ProcessName.StartsWith("Daedalus"));
-            if (DaedalusProcesses.Any())
-            {
+            var daedalusProcesses = currentProcesses.Where(p => p.ProcessName.StartsWith("Daedalus")).ToList();
+            if (daedalusProcesses.Any())
                 Log.Verbose("Daedalus is already running");
-            }
             else
             {
                 var errorMessage = "Failed to connect to Daedalus node! Could not find the running application";
                 Log.Error(errorMessage);
                 throw new Exception(errorMessage);
             }
-            Log.Verbose("Starting server...");
+            Log.Verbose("Starting wallet server...");
 
+            Process mainDaedalusProcess;
+            if (daedalusProcesses.Count() == 1)
+            {
+                mainDaedalusProcess = daedalusProcesses.First();
+            }
+            else
+            {
+                daedalusProcesses = daedalusProcesses.Where(d => d.MainWindowTitle.Contains("Daedalus Mainnet")).ToList();
+                if (daedalusProcesses.Count() != 1)
+                    throw new Exception(
+                        "Failed to find main process of Daedalus Mainnet! Its required in order to connect to the started cardano node!");
 
-            var daedaelusWalletPath = @"""C:\Users\grube\AppData\Roaming\Daedalus Mainnet\wallets""";
+                mainDaedalusProcess = daedalusProcesses.First();
+            }
 
             var arguments = new[]
             {
-                "--port " + port,
-                "--database " + daedaelusWalletPath,
-                "--sync-tolerance 300s",
+                "--shutdown-handler",
+                "--port " + walletSettings.Port,
+                string.Format("--database \"{0}\"",walletSettings.Database),
+                string.Format("--sync-tolerance {0}s", walletSettings.SyncTolerance),
                 "--mainnet",
-                @"--node-socket \\.\pipe\cardano-node-mainnet"
+                string.Format(@"--node-socket \\.\pipe\cardano-node-mainnet.{0}.0", mainDaedalusProcess.Id)
             };
             var startArguments = string.Format("serve {0}", string.Join(" ", arguments));
             return ExecuteWalletCommand(startArguments);
         }
-        
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -125,7 +125,7 @@
                 <TextBlock Text="{Binding BlockChainCache.CacheDate}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </StackPanel>
 
-              <Expander Grid.Row="1" Margin="10">
+              <Expander Grid.Row="1" Margin="10" IsExpanded="{Binding SprdSelection.Pool.Base, Converter={x:Static ObjectConverters.IsNull}}">
                 <Expander.Header>
                   <DockPanel VerticalAlignment="Stretch">
                     <TextBlock FontStyle="Italic" Foreground="Green">SPRD to Pool</TextBlock>
@@ -158,7 +158,7 @@
                   <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="2" Text="{Binding Path=SprdSelection.Wallet.Name}" Foreground="Black" />
 
                   <TextBlock Grid.Row="0" Grid.Column="4" Text="Ada Balance" Foreground="Black" />
-                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.BalanceAda}" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.BalanceAda, StringFormat=\{0:N0\} ₳}" Foreground="Black" />
 
                   <TextBlock  Grid.Row="0" Grid.Column="6"  Text="Email to notify*" Foreground="Black" />
                   <TextBox Grid.Row="1" Grid.Column="6" Text="{Binding Path=SprdSelection.NotifyEmail}" Foreground="Black" />
@@ -250,8 +250,7 @@
               </Grid.RowDefinitions>
               <TextBlock Text="Wallets open in Daedalus" FontSize="17" Margin="24, 5,0,5"></TextBlock>
 
-              <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding AllWallets}" SelectedIndex="0"
-                        SelectedItem="{Binding Path=SprdSelection.Wallet, Mode=TwoWay}"  >
+              <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding AllWallets}" SelectedItem="{Binding Path=SprdSelection.Wallet, Mode=TwoWay}"  >
                 <DataGrid.Columns>
                   <DataGridTextColumn Binding="{Binding Name}"
                                       Header="Name"/>
@@ -262,9 +261,9 @@
                 </DataGrid.Columns>
               </DataGrid>
 
-              <TextBlock Grid.Row="2" Text="Delegations" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+              <TextBlock IsVisible="False" Grid.Row="2" Text="Delegations" FontSize="17" Margin="24, 5,0,5"></TextBlock>
 
-              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding AllWallets}">
+              <DataGrid IsVisible="False" Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding AllWallets}">
                 <DataGrid.Columns>
                   <DataGridTextColumn Binding="{Binding Pool}"
                                       Header="Name"/>
@@ -291,7 +290,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition  Height="*"/>
               </Grid.RowDefinitions>
-              <TextBlock Text="Recently committed ADA with SPRD.exe" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+              <TextBlock Text="All committed ADA with SPRD" FontSize="17" Margin="24, 5,0,5"></TextBlock>
 
               <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools}">
                 <DataGrid.Columns>
@@ -301,8 +300,6 @@
                                       Header="Comitted ADA" />
                   <DataGridTextColumn Binding="{Binding FromAdress}"
                                       Header="From" />
-                  <DataGridTextColumn Binding="{Binding DateComitted}"
-                                      Header="Time" />
                 </DataGrid.Columns>
               </DataGrid>
 

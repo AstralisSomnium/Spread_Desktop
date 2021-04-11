@@ -1,0 +1,8 @@
+{
+    "WalletSettings": {
+        "Port": 41799,
+        "Database": "%APPDATA%\\Daedalus Mainnet\\wallets",
+        "TokenMetadataServer": "https://tokens.cardano.org",
+        "SyncTolerance": "300"
+    }
+}

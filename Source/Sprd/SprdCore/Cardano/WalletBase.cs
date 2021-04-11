@@ -14,6 +14,8 @@ namespace SprdCore.Cardano
 
         protected Process ExecuteWalletCommand(string command)
         {
+            Log.Verbose("ExecuteWalletCommand: '{0}'", command);
+
             var walletExe = "cardano-wallet.exe";
             var daedaelusWalletFile = new FileInfo(string.Format(@"{0}{1}", DaedalusInstallPath, walletExe));
             var currentProcesses = Process.GetProcesses();
