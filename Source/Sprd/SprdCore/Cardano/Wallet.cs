@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using IO.Swagger.Model;
 using Serilog;
 using SprdCore.SPRD;
 
 namespace SprdCore.Cardano
 {
-    public class Wallet
+    public class Wallet : INotifyPropertyChanged
     {
         public Wallet()
         {
@@ -22,8 +24,9 @@ namespace SprdCore.Cardano
             var sprdPoolInfosForThisWallet = sprdPoolInfos.Where(p => p.wallet_id == apiResponse.Id).ToList();
             if (sprdPoolInfosForThisWallet.Any())
             {
-                Log.Verbose("Found already a comitted SPRD for this wallet " + Name);
+                Log.Information("Found already a comitted SPRD for this wallet " + Name);
                 CurrentSprdPool = sprdPoolInfosForThisWallet.First();
+                CurrentSprdPool.wallet_id = Name;
             }
 
             if (apiResponse.Delegation != null)
@@ -63,9 +66,32 @@ namespace SprdCore.Cardano
         public string Name { get; set; }
         public decimal BalanceAda { get; private set; }
         public string WalletStatus { get; private set; }
-        public SprdPoolInfo CurrentSprdPool { get; private set; }
+
+        private SprdPoolInfo _currentSprdPool;
+
+        public SprdPoolInfo CurrentSprdPool
+        {
+            get
+            {
+                return _currentSprdPool;
+            }
+            set
+            {
+                _currentSprdPool = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string CurrentEpochDelegationStatus { get; private set; }
         public string NextEpochDelegationStatus { get; private set; }
         public string LastEpochDelegationStatus { get; private set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [Annotations.NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

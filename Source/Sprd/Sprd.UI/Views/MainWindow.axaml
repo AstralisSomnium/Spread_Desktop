@@ -120,12 +120,12 @@
                 <TextBlock Text="Fetching Stake Pools from servers (about 100mb).. can take few minutes. Be patient, be fair!" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </Grid>
 
-              <StackPanel Orientation="Horizontal" Grid.Row="0" IsVisible="{Binding !!BlockChainCache.StakePools.Count }">
+              <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="0" IsVisible="{Binding !!BlockChainCache.StakePools.Count }">
                 <TextBlock Text="Stake pool list is outdated! In the background we are fetching new data! This list is from: " FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
                 <TextBlock Text="{Binding BlockChainCache.CacheDate}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </StackPanel>
 
-              <Expander Grid.Row="1" Margin="10" IsExpanded="{Binding SprdSelection.Pool.Base, Converter={x:Static ObjectConverters.IsNull}}">
+              <Expander Grid.Row="1" Margin="10" IsExpanded="{Binding SprdSelection.Pool.Base, Converter={x:Static ObjectConverters.IsNull}, Mode=OneWay}">
                 <Expander.Header>
                   <DockPanel VerticalAlignment="Stretch">
                     <TextBlock FontStyle="Italic" Foreground="Green">SPRD to Pool</TextBlock>
@@ -152,18 +152,18 @@
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
                   <TextBlock Grid.Row="0" Grid.Column="0" Text="Pool" Foreground="Black" />
-                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="0" Text="{Binding Path=SprdSelection.Pool.Name}" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="0" Text="{Binding Path=SprdSelection.Pool.Name, Mode=OneWay}" Foreground="Black" />
 
                   <TextBlock Grid.Row="0" Grid.Column="2" Text="Wallet" Foreground="Black" />
-                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="2" Text="{Binding Path=SprdSelection.Wallet.Name}" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="2" Text="{Binding Path=SprdSelection.Wallet.Name, Mode=OneWay}" Foreground="Black" />
 
                   <TextBlock Grid.Row="0" Grid.Column="4" Text="Ada Balance" Foreground="Black" />
-                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.BalanceAda, StringFormat=\{0:N0\} ₳}" Foreground="Black" />
+                  <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.BalanceAda, StringFormat=\{0:N0\} ₳, Mode=OneWay}" Foreground="Black" />
 
                   <TextBlock  Grid.Row="0" Grid.Column="6"  Text="Email to notify*" Foreground="Black" />
                   <TextBox Grid.Row="1" Grid.Column="6" Text="{Binding Path=SprdSelection.NotifyEmail}" Foreground="Black" />
 
-                  <Button Grid.Row="1" Grid.Column="8" Content="SPRD your ADA now" Command="{Binding SpreadAdaCommand}" IsDefault="True" />
+                  <Button Grid.Row="1" Grid.Column="8" Content="SPRD your ADA now" Command="{Binding SpreadAdaCommand}" IsDefault="True" ToolTip.Tip="Is enabled when no current SPRD for the active wallet is registered and if a pool and wallet is selected!" />
                 </Grid>
               </Expander>
 
@@ -173,7 +173,7 @@
                   <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                       <Image Source="/Assets/iconfinder_nothing_to_say_66327.png" />
-                      <TextBlock Text="0 Blocks" Foreground="Red"/>
+                      <TextBlock Text="{Binding AllZeroStakePools.Count, StringFormat=0 Blocks (\{0\})}" Foreground="Red"/>
                     </StackPanel>
                   </TabItem.Header>
                   <DataGrid Items="{Binding AllZeroStakePools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" SelectedIndex="0">
@@ -203,7 +203,7 @@
                   <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                       <Image Source="/Assets/iconfinder_game_of_thrones_game_thrones_series_element_fire_flame_heat_4527379.png" />
-                      <TextBlock Text="Almost funded" Foreground="Red" />
+                      <TextBlock Text="{Binding AlmostFundedPools.Count, StringFormat=Almost funded (\{0\})}" Foreground="Red" />
                     </StackPanel>
                   </TabItem.Header>
                   <DataGrid Items="{Binding AlmostFundedPools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" SelectedIndex="0">
@@ -286,38 +286,58 @@
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition  Height="*"/>
+                <RowDefinition  Height="Auto"/>
                 <RowDefinition Height="Auto" />
                 <RowDefinition  Height="*"/>
               </Grid.RowDefinitions>
-              <TextBlock Text="All committed ADA with SPRD" FontSize="17" Margin="24, 5,0,5"></TextBlock>
+              <TextBlock Text="Manage your comitted ADA" FontSize="17" Margin="24, 5,0,5"></TextBlock>
 
-              <DataGrid Grid.Row="1" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools}">
-                <DataGrid.Columns>
-                  <DataGridTextColumn Binding="{Binding Pool}"
-                                      Header="Name"/>
-                  <DataGridTextColumn Binding="{Binding ComittedAda}"
-                                      Header="Comitted ADA" />
-                  <DataGridTextColumn Binding="{Binding FromAdress}"
-                                      Header="From" />
-                </DataGrid.Columns>
-              </DataGrid>
+                <Grid Margin="24, 10, 15, 5" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
 
-              <TextBlock Grid.Row="2" Text="Last succesfully funded Pools" FontSize="17" Margin="24, 5,0,5" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
 
-              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastSpreadPools}">
-                <DataGrid.Columns>
-                  <DataGridTextColumn Binding="{Binding Pool}"
-                                      Header="Name"/>
-                  <DataGridTextColumn Binding="{Binding ComittedAda}"
-                                      Header="Total spread ADA" />
-                  <DataGridTextColumn Binding="{Binding DelegatorsCount}"
-                                      Header="Delegators" />
-                  <DataGridTextColumn Binding="{Binding DateComitted}"
-                                      Header="Time" />
-                  <DataGridTextColumn Binding="{Binding Blocks}"
-                                      Header="CurrentBlocks" />
-                </DataGrid.Columns>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Pool" Foreground="Black" />
+                    <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="0" Text="{Binding Path=SprdSelection.Wallet.CurrentSprdPool.pool_id}" Foreground="Black" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Wallet" Foreground="Black" />
+                    <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="2" Text="{Binding Path=SprdSelection.Wallet.CurrentSprdPool.wallet_id}" Foreground="Black" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="Ada Balance" Foreground="Black" />
+                    <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="4" Text="{Binding Path=SprdSelection.Wallet.CurrentSprdPool.commited_ada, StringFormat=\{0:N0\} ₳}" Foreground="Black" />
+
+                    <TextBlock  Grid.Row="0" Grid.Column="6"  Text="Email" Foreground="Black" />
+                    <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="6" Text="{Binding Path=SprdSelection.Wallet.CurrentSprdPool.commiter_email}" Foreground="Black" />
+
+                    <Button Grid.Row="1" Grid.Column="8" Content="Remove SPRD commitment" Command="{Binding DeleteCurrentSprd}" IsDefault="True" />
+                </Grid>
+
+              <TextBlock Grid.Row="2" Text="{Binding LastComittedAdaPools.Count, StringFormat=All committed ADA with SPRD (\{0\})}" FontSize="17" Margin="24, 15,0,5" />
+
+              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools}">
+                  <DataGrid.Columns>
+                      <DataGridTextColumn Binding="{Binding pool_id}"
+                                          Header="Name"/>
+                      <DataGridTextColumn Binding="{Binding commited_ada, StringFormat=\{0:N0\} ₳}"
+                                          Header="Comitted ADA" />
+                      <DataGridTextColumn Binding="{Binding wallet_id}"
+                                          Header="From" />
+                  </DataGrid.Columns>
               </DataGrid>
             </Grid>
           </TabItem>

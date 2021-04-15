@@ -1,14 +1,17 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using JetBrains.Annotations;
 using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -25,10 +28,32 @@ namespace Sprd.UI.ViewModels
         ObservableCollection<StakePool> AllStakePools { get; set; }
     }
 
-    public class BlockChainCache
+    public class BlockChainCache : INotifyPropertyChanged
     {
-        public ObservableCollection<StakePool> StakePools { get; set; }
+        private ObservableCollection<StakePool> _stakePools;
+
+        public ObservableCollection<StakePool> StakePools
+        {
+            get
+            {
+                return _stakePools;
+            }
+            set
+            {
+                _stakePools = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DateTime CacheDate { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class MainWindowViewModel : ViewModelBase, IDisposable, INotifyPropertyChanged, IMainWindowViewModel
@@ -52,6 +77,20 @@ namespace Sprd.UI.ViewModels
             set
             {
                 _allWallets = value;
+                OnPropertyChanged();
+            }
+        }
+
+        ObservableCollection<SprdPoolInfo> _lastComittedAdaPools;
+        public ObservableCollection<SprdPoolInfo> LastComittedAdaPools
+        {
+            get
+            {
+                return new ObservableCollection<SprdPoolInfo>(_lastComittedAdaPools.OrderBy(o => o._id));
+            }
+            set
+            {
+                _lastComittedAdaPools = value;
                 OnPropertyChanged();
             }
         }
@@ -128,7 +167,7 @@ namespace Sprd.UI.ViewModels
                 Wallet = new Wallet { Name = "<Select Wallet>" },
             };
 
-            SpreadAdaCommand = ReactiveCommand.Create(SpreadAda, this.WhenAnyValue(x => x.CanExecuteSprd));
+            SpreadAdaCommand = ReactiveCommand.Create(SpreadAda);//, this.WhenAnyValue(x => x.CanExecuteSprd));
 
             BlockChainCache = new BlockChainCache
             {
@@ -149,6 +188,7 @@ namespace Sprd.UI.ViewModels
                 _allStakePools = new ObservableCollection<StakePool>();
             }
             _allWallets = new ObservableCollection<Wallet>();
+            LastComittedAdaPools = new ObservableCollection<SprdPoolInfo>();
 
             _cardanoServer = new CardanoServer();
             _sprdServer = new SprdServer();
@@ -165,14 +205,74 @@ namespace Sprd.UI.ViewModels
             {
                 Log.Verbose("CanExecuteSprd");
 
-                var canExecuteSprd = SprdSelection.Wallet?.Name == string.Empty || SprdSelection.Wallet?.Base == null ||
-                                     SprdSelection.Wallet?.Name == "<Select Wallet>" ||
-                                     SprdSelection.Pool?.Name == string.Empty ||
-                                     SprdSelection.Pool?.Name == "<Select Pool>" || SprdSelection.Pool?.Base == null ||
-                                     SprdSelection.NotifyEmail == string.Empty;
+                var canExecuteSprd = SprdSelection.Wallet?.Name != string.Empty && 
+                                     SprdSelection.Wallet?.Base != null &&
+                                     SprdSelection.Wallet?.Name != "<Select Wallet>" &&
+                                     SprdSelection.Pool?.Name != string.Empty &&
+                                     SprdSelection.Pool?.Name != "<Select Pool>" &&
+                                     SprdSelection.Pool?.Base != null &&
+                                     SprdSelection.NotifyEmail != string.Empty;
                 Log.Verbose("CanExecuteSprd " + canExecuteSprd);
 
+                return canExecuteSprd;
+            }
+        }
+
+        public bool CanExecuteDeleteSprd
+        {
+            get
+            {
+                Log.Verbose("CanExecuteDeleteSprd");
+
+                var canExecuteSprd = SprdSelection.Wallet?.CurrentSprdPool?.pool_id == string.Empty || 
+                                     SprdSelection.Wallet?.CurrentSprdPool?.wallet_id == null ||
+                                     SprdSelection.Wallet?.CurrentSprdPool?._id == null;
+                Log.Verbose("CanExecuteDeleteSprd " + canExecuteSprd);
+
                 return !canExecuteSprd;
+            }
+        }
+
+        async void DeleteCurrentSprd()
+        {
+            try
+            {
+                Log.Verbose("Clicked button: DeleteCurrentSprd");
+                if (!CanExecuteDeleteSprd)
+                {
+                    var warnMessage = string.Format(
+                        "Your wallet has no commitments in the SPRD database therefore cannot delete it. If the problem persists contact support@sprd-pool.org");
+
+                    Log.Warning(warnMessage);
+                    var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Warning);
+                    var msgBoxResult = msgBox.ShowDialog(_desktopMainWindow);
+                    return;
+                }
+
+                var sprdInfo = new SprdPoolInfo()
+                {
+                    commited_ada = SprdSelection.Wallet.CurrentSprdPool.commited_ada,
+                    commiter_email = SprdSelection.Wallet.CurrentSprdPool.commiter_email,
+                    pool_id = SprdSelection.Wallet.CurrentSprdPool.pool_id,
+                    wallet_id = SprdSelection.Wallet.CurrentSprdPool.wallet_id,
+                    _id = SprdSelection.Wallet.CurrentSprdPool._id
+                };
+                var response = await _sprdServer.DeletePoolInfoAsync(sprdInfo);
+                var msgBoxSuccess = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Sucessfully deleted spread",
+                    string.Format(
+                        "Deleted succesfully your SPRD for the pool {0}{1}We hope you will support another pool with your ADA!",
+                        sprdInfo.pool_id, Environment.NewLine), ButtonEnum.Ok, Icon.Info);
+                var msgBoxResultSuccess = await msgBoxSuccess.ShowDialog(_desktopMainWindow);
+                SprdSelection.Wallet.CurrentSprdPool = null;
+            }
+            catch (Exception e)
+            {
+                var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Unexpected error",
+                    string.Format(
+                        "While sending your deletion of SPRD to the server following error occurred: {0}{1}If the problem persists contact support@sprd-pool.org",
+                        e.Message, Environment.NewLine), ButtonEnum.Ok, Icon.Error);
+                var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
+                Log.Logger.Fatal(e.Message);
             }
         }
 
@@ -231,7 +331,7 @@ namespace Sprd.UI.ViewModels
         {
             try
             {
-                _cardanoServer.ConnectToDaedalus(_sprdSettings.WalletSettings);
+                WalletApiProcess = _cardanoServer.ConnectToDaedalus(_sprdSettings.WalletSettings);
             }
             catch (Exception e)
             {
@@ -244,7 +344,7 @@ namespace Sprd.UI.ViewModels
                     return false;
                 }
                 _cardanoServer.StartDaedalus();
-                _cardanoServer.ConnectToDaedalus(_sprdSettings.WalletSettings);
+                WalletApiProcess = _cardanoServer.ConnectToDaedalus(_sprdSettings.WalletSettings);
             }
 
             try
@@ -252,7 +352,29 @@ namespace Sprd.UI.ViewModels
                 var allWallets = await _walletClient.GetAllWalletsAsync();
                 AllWallets = new ObservableCollection<Wallet>(allWallets);
 
+                if (!AllWallets.Any())
+                    throw new Exception("No wallet found in Daedalus. You cannot SPRD any ADA since a Wallet must be selected in order to verify your identity!");
+
+                foreach (var allWallet in AllWallets)
+                {
+                    if (allWallet.CurrentSprdPool == null) continue;
+                    var poolForWallet = BlockChainCache.StakePools.Where(p => p.Base?.Id == allWallet.CurrentSprdPool?.pool_id).ToList();
+                    if(poolForWallet.Any())
+                        allWallet.CurrentSprdPool.pool_id = poolForWallet.First().Name;
+                }
+                SprdSelection.Wallet = AllWallets.First();
+
+                var lastCommitedPoolInformations = await _sprdServer.GetPoolInformationsAsync();
+                LastComittedAdaPools = new ObservableCollection<SprdPoolInfo>(lastCommitedPoolInformations);
+
                 var allPools = await _walletClient.GetAllPoolsAsync();
+                foreach (var allWallet in AllWallets)
+                {
+                    if (allWallet.CurrentSprdPool == null) continue;
+                    var poolForWallet = AllStakePools.Where(p => p.Base?.Id == allWallet.CurrentSprdPool?.pool_id).ToList();
+                    if (poolForWallet.Any())
+                        allWallet.CurrentSprdPool.pool_id = poolForWallet.First().Name;
+                }
 
                 BlockChainCache = new BlockChainCache();
                 BlockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
@@ -279,21 +401,10 @@ namespace Sprd.UI.ViewModels
                 return false;
             }
 
-            try
-            {
-                if (!AllWallets.Any())
-                    throw new Exception("No wallet found in Daedalus. You cannot SPRD any ADA since a Wallet must be selected in order to verify your identity!");
-
-                SprdSelection.Wallet = AllWallets.First();
-            }
-            catch (Exception e)
-            {
-                await ShowException(e.Message);
-                return false;
-            }
-
             return true;
         }
+
+        public Process WalletApiProcess { get; set; }
 
         async Task<ButtonResult> ShowException(string message, string title = "SPRD: Unexpected error")
         {
