@@ -281,7 +281,7 @@ namespace Sprd.UI.ViewModels
             try
             {
                 Log.Verbose("Clicked button: SpreadAda");
-                if (CanExecuteSprd)
+                if (!CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
                         "Thanks for your engagement but spreading your ADA failed because some data is missing! Select a pool, wallet and insert an email address and try again. If the problem persists contact support@sprd-pool.org");
@@ -396,6 +396,14 @@ namespace Sprd.UI.ViewModels
             }
             catch (Exception e)
             {
+                if (e.Message.Contains("The operation has timed out."))
+                {
+                    Log.Warning("Timeout happened, try to restart servers");
+                    Dispose();
+                    var started = await StartServerAsync();
+                    if (started)
+                        return started;
+                }
                 var errorMessag = string.Format("While starting the Cardano wallet API following error occurred: {0}", e.Message);
                 await ShowException(errorMessag);
                 return false;
@@ -422,6 +430,8 @@ namespace Sprd.UI.ViewModels
 
         public void Dispose()
         {
+            Log.Information("Calling Dispose");
+
             _cardanoServer.Dispose();
             _walletClient.Dispose();
         }
