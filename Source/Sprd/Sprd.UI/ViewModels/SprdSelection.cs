@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using Avalonia.Data;
 using SprdCore.Cardano;
 
 namespace Sprd.UI.ViewModels
@@ -34,7 +36,6 @@ namespace Sprd.UI.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public string NotifyEmail { get; set; }
 
 

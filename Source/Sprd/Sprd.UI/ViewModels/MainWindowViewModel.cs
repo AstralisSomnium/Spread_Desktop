@@ -4,14 +4,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using JetBrains.Annotations;
 using MessageBox.Avalonia.Enums;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -26,34 +27,6 @@ namespace Sprd.UI.ViewModels
     {
         ObservableCollection<Wallet> AllWallets { get; set; }
         ObservableCollection<StakePool> AllStakePools { get; set; }
-    }
-
-    public class BlockChainCache : INotifyPropertyChanged
-    {
-        private ObservableCollection<StakePool> _stakePools;
-
-        public ObservableCollection<StakePool> StakePools
-        {
-            get
-            {
-                return _stakePools;
-            }
-            set
-            {
-                _stakePools = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public DateTime CacheDate { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 
     public class MainWindowViewModel : ViewModelBase, IDisposable, INotifyPropertyChanged, IMainWindowViewModel
@@ -149,7 +122,7 @@ namespace Sprd.UI.ViewModels
             get
             {
                 return new DataGridCollectionView(AllStakePools.Where(p =>
-                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance >= 0.5 || p.SprdStakeBlockChance >= 0.5)));
+                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance >= 0.5 || p.SprdStakeBlockChance >= 0.5) && p.ActiveBlockChance < 100));
             }
         }
 
@@ -204,16 +177,23 @@ namespace Sprd.UI.ViewModels
             get
             {
                 Log.Verbose("CanExecuteSprd");
+                try
+                {
+                    var email = new MailAddress(SprdSelection.NotifyEmail);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("CanExecuteSprd false " + e.Message);
+                    return false;
+                }
 
                 var canExecuteSprd = SprdSelection.Wallet?.Name != string.Empty && 
                                      SprdSelection.Wallet?.Base != null &&
                                      SprdSelection.Wallet?.Name != "<Select Wallet>" &&
                                      SprdSelection.Pool?.Name != string.Empty &&
                                      SprdSelection.Pool?.Name != "<Select Pool>" &&
-                                     SprdSelection.Pool?.Base != null &&
-                                     SprdSelection.NotifyEmail != string.Empty;
+                                     SprdSelection.Pool?.Base != null;
                 Log.Verbose("CanExecuteSprd " + canExecuteSprd);
-
                 return canExecuteSprd;
             }
         }
@@ -241,10 +221,10 @@ namespace Sprd.UI.ViewModels
                 if (!CanExecuteDeleteSprd)
                 {
                     var warnMessage = string.Format(
-                        "Your wallet has no commitments in the SPRD database therefore cannot delete it. If the problem persists contact support@sprd-pool.org");
+                        "Your wallet has no commitments in the SPRD database therefore cannot delete it. {0}If the problem persists contact support@sprd-pool.org", Environment.NewLine);
 
                     Log.Warning(warnMessage);
-                    var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Warning);
+                    var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Error);
                     var msgBoxResult = msgBox.ShowDialog(_desktopMainWindow);
                     return;
                 }
@@ -284,10 +264,10 @@ namespace Sprd.UI.ViewModels
                 if (!CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
-                        "Thanks for your engagement but spreading your ADA failed because some data is missing! Select a pool, wallet and insert an email address and try again. If the problem persists contact support@sprd-pool.org");
+                        "Data is missing:{0}Select a pool, wallet, insert a valid email address, wait for a updated Stake Pool list and try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
                     
                     Log.Warning(warnMessage);
-                    var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Warning);
+                    var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Error);
                     var msgBoxResult = msgBox.ShowDialog(_desktopMainWindow);
                     return;
                 }
