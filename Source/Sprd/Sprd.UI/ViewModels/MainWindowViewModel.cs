@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -261,7 +262,7 @@ namespace Sprd.UI.ViewModels
             try
             {
                 Log.Verbose("Clicked button: SpreadAda");
-                if (!CanExecuteSprd)
+                if (CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
                         "Data is missing:{0}Select a pool, wallet, insert a valid email address, wait for a updated Stake Pool list and try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
@@ -277,7 +278,9 @@ namespace Sprd.UI.ViewModels
                     commited_ada = SprdSelection.Wallet.BalanceAda,
                     commiter_email = SprdSelection.NotifyEmail,
                     pool_id = SprdSelection.Pool.Base.Id,
-                    wallet_id = SprdSelection.Wallet.Base.Id
+                    wallet_id = SprdSelection.Wallet.Base.Id,
+                    timestamp = DateTime.Now,
+                    email_send = false
                 };
                 var response = await _sprdServer.AddNewPoolInfoAsync(sprdInfo);
                 var msgBoxSuccess = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Sucessful spread",
@@ -305,6 +308,23 @@ namespace Sprd.UI.ViewModels
         public void StartCardanoServer(object? sender, EventArgs e)
         {
             var result = StartServerAsync();
+        }
+
+        void ResolvePoolIds(ObservableCollection<StakePool> stakePools)
+        {
+            foreach (var allWallet in AllWallets)
+            {
+                if (allWallet.CurrentSprdPool == null) continue;
+                var poolForWallet = stakePools.Where(p => p.Base?.Id == allWallet.CurrentSprdPool?.pool_id).ToList();
+                if (poolForWallet.Any())
+                    allWallet.CurrentSprdPool.pool_id = poolForWallet.First().Name;
+            }
+            foreach (var commitments in LastComittedAdaPools)
+            {
+                var poolForWallet = stakePools.Where(p => p.Base?.Id == commitments.pool_id).ToList();
+                if (poolForWallet.Any())
+                    commitments.pool_id = poolForWallet.First().Name;
+            }
         }
 
         async Task<bool> StartServerAsync()
@@ -338,36 +358,21 @@ namespace Sprd.UI.ViewModels
                 if (!AllWallets.Any())
                     throw new Exception(string.Format("No wallets found in Daedalus. You cannot use SPRD since a Wallet must be selected in order to verify your identity!{0} The logs may help or try to  restart Daedalus and SPRD!", Environment.NewLine));
 
-                foreach (var allWallet in AllWallets)
-                {
-                    if (allWallet.CurrentSprdPool == null) continue;
-                    var poolForWallet = BlockChainCache.StakePools.Where(p => p.Base?.Id == allWallet.CurrentSprdPool?.pool_id).ToList();
-                    if(poolForWallet.Any())
-                        allWallet.CurrentSprdPool.pool_id = poolForWallet.First().Name;
-                }
+                ResolvePoolIds(BlockChainCache.StakePools);
                 SprdSelection.Wallet = AllWallets.First();
 
-
                 var allPools = await _walletClient.GetAllPoolsAsync();
-                foreach (var allWallet in AllWallets)
-                {
-                    if (allWallet.CurrentSprdPool == null) continue;
-                    var poolForWallet = AllStakePools.Where(p => p.Base?.Id == allWallet.CurrentSprdPool?.pool_id).ToList();
-                    if (poolForWallet.Any())
-                        allWallet.CurrentSprdPool.pool_id = poolForWallet.First().Name;
-                }
 
                 BlockChainCache = new BlockChainCache();
                 BlockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
-                BlockChainCache.CacheDate = DateTime.Now;
-                string jsonString = JsonConvert.SerializeObject(BlockChainCache);
+                ResolvePoolIds(BlockChainCache.StakePools);
 
-                byte[] jsonUtf8Bytes;
+                BlockChainCache.CacheDate = DateTime.Now;
                 var options = new JsonSerializerOptions
                 {
                     WriteIndented = true
                 };
-                jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(BlockChainCache, options);
+                byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(BlockChainCache, options);
                 await File.WriteAllBytesAsync(_stakePoolListDatabase, jsonUtf8Bytes);
                 AllStakePools = new ObservableCollection<StakePool>(allPools);
 

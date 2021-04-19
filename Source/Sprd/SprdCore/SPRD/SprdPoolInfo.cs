@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace SprdCore.SPRD
@@ -20,6 +21,8 @@ namespace SprdCore.SPRD
         public string wallet_id { get; set; }
         public decimal commited_ada { get; set; }
         public string commiter_email { get; set; }
+        public DateTime timestamp { get; set; }
+        public bool email_send { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
