@@ -87,7 +87,6 @@
         <Separator />
         <TextBlock Text="Version 1.0.0.0"/>
       </MenuItem>
-      <TextBlock HorizontalAlignment="Right" Opacity="0.3" IsEnabled="False" IsHitTestVisible="False" FontWeight="Light" Text="We do not save, send or read any confidential data about your wallets. The code is open source on Github. Secure and fair!" />
     </Menu>
 
 
@@ -336,8 +335,8 @@
                                       Header="Name"/>
                   <DataGridTextColumn Binding="{Binding commited_ada, StringFormat=\{0:N0\} ₳}"
                                       Header="Comitted ADA" />
-                  <DataGridTextColumn Binding="{Binding wallet_id}"
-                                      Header="From" />
+                  <DataGridTextColumn Binding="{Binding timestamp}"
+                                      Header="Timestamp" />
                 </DataGrid.Columns>
               </DataGrid>
             </Grid>
@@ -346,7 +345,14 @@
       </Grid>
 
 
-      <Label Grid.Row="1" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Content="support@sprd-pool.org" FontSize="15" Margin="0, 3,0,15"></Label>
+      <Grid Grid.Row="1" DockPanel.Dock="Bottom">
+          <Grid.RowDefinitions>
+              <RowDefinition Height="*" />
+              <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <Label Grid.Row="0" HorizontalAlignment="Center" Content="support@sprd-pool.org" FontSize="15" Margin="0, 3,0,3"></Label>
+          <Label Grid.Row="1" HorizontalAlignment="Center" Content="We do not save, send or read any confidential data about your wallets. The code is open source on Github. Secure and fair!" FontSize="8" Margin="0, 3,0,3"></Label>
+      </Grid>
 
     </Grid>
 
