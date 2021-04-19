@@ -10,12 +10,16 @@ _Visit the website for more details: https://sprd-pool.org/_
 
 # Software
 
-We support true decentralization, this means pushing single pool operators. The unique advantage of our software is for small and big delegators to have guaranteed rewards and support true decentralization:
+We support true decentralization, this means pushing single pool operators. The unique advantage of our software is for small and big delegators to have guaranteed rewards and support true decentralization.
+
+Overview of the SPRD software:
 1. Brings awareness
    1. The software shows the true decentralization potential and helps to choose a pool for delegator
 1. Helps choosing a pool
    1. Over 2000 registred stake pools are a lot. No doubt, it’s a hard choice if you need to pick one. SPRD is a tool to make the choice simpler and faster.
 1. Ensures delegators rewards
+   1. If the desired pool owns too low ADA for mining a block then the software collects all  “committed” delegators. When enough delegators are found then all of them are notified in order to make the delegation happen!
+
 
 ## No release so far!
 
@@ -25,8 +29,7 @@ The first software will be released during april, be exicted and click `WATCH` t
 
 # Requirements
 
-This page includes useful information on the supported Operating Systems as well
-as the hardware requirements that are needed to install and use GitLab.
+This page includes useful information on the supported Operating Systems as well that are needed to install and use SPRD.
 
 ## Operating Systems
 
@@ -40,7 +43,7 @@ Supported:
 ### Daedalus Wallet
 
 + Daedalus Version **4.0.14** and later
-  + _Download from (offical source](
+  + _Download from [offical source](
 https://daedaluswallet.io/en/download/)_
   + _But no major version change is supported!_
 
@@ -49,9 +52,9 @@ https://daedaluswallet.io/en/download/)_
 + Default log location: `%TEMP%\SPRD\sprd-{Date}.log`
 + Configuration file `Sprd.UI.dll.config`
 
-### Open source software to collaborate on code
+## Open source software to collaborate on code
 
-We want to make it as easy as possible for SPRD users to become SPRD contributors, so for now you can create issues, pulls requests, forks and communicate it with Patrick @AstralisSomnium
+We want to make it as easy as possible for SPRD users to become SPRD contributors, so for now you can create issues, pulls requests, forks and communicate it with [Patrick](https://sprd-pool.org/#team) aka [@AstralisSomnium](https://github.com/AstralisSomnium)
 
 #### Technology
 
@@ -81,7 +84,7 @@ We're **not** developers, support people, and production engineers at the moment
 
 Time is valuable and we deliver you valuable software with our time:
 + The software is free to use
-+ We believe that every download has a heart and supports us by paypal, patreaon or by delegating ADA to our stake pool. _(see below the details)_
++ We believe that every downloader has a heart and supports us by paypal, patreaon or by delegating ADA to our stake pool. _(see below the details)_
 
 **Be fair and support us now!**
 
@@ -97,8 +100,8 @@ Our pool:
 + Pool ID [`2064da38531dad327135edd98003032cefa059c4c8c50c2b0440c63d`](https://pooltool.io/pool/2064da38531dad327135edd98003032cefa059c4c8c50c2b0440c63d)
 
 Contributor pool:
-+ Arthuer supports the SPRD development a lot, so show him your gratitude:
-  +  Ticker **[WISE]**
++ Arthur supports the SPRD development a lot, so show him your gratitude:
+  + Ticker **[WISE]**
   + Website: https://wise-pool.eu/
 
 ## Donate
