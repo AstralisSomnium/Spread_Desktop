@@ -122,7 +122,7 @@ namespace Sprd.UI.ViewModels
             get
             {
                 return new DataGridCollectionView(AllStakePools.Where(p =>
-                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance >= 0.5 || p.SprdStakeBlockChance >= 0.5) && p.ActiveBlockChance < 100));
+                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance >= 0.5 || p.SprdStakeBlockChance >= 0.5) && p.ActiveBlockChance < 1));
             }
         }
 
@@ -329,11 +329,14 @@ namespace Sprd.UI.ViewModels
 
             try
             {
+                var lastCommitedPoolInformations = await _sprdServer.GetPoolInformationsAsync();
+                LastComittedAdaPools = new ObservableCollection<SprdPoolInfo>(lastCommitedPoolInformations);
+
                 var allWallets = await _walletClient.GetAllWalletsAsync();
                 AllWallets = new ObservableCollection<Wallet>(allWallets);
 
                 if (!AllWallets.Any())
-                    throw new Exception("No wallet found in Daedalus. You cannot SPRD any ADA since a Wallet must be selected in order to verify your identity!");
+                    throw new Exception(string.Format("No wallets found in Daedalus. You cannot use SPRD since a Wallet must be selected in order to verify your identity!{0} The logs may help or try to  restart Daedalus and SPRD!", Environment.NewLine));
 
                 foreach (var allWallet in AllWallets)
                 {
@@ -344,8 +347,6 @@ namespace Sprd.UI.ViewModels
                 }
                 SprdSelection.Wallet = AllWallets.First();
 
-                var lastCommitedPoolInformations = await _sprdServer.GetPoolInformationsAsync();
-                LastComittedAdaPools = new ObservableCollection<SprdPoolInfo>(lastCommitedPoolInformations);
 
                 var allPools = await _walletClient.GetAllPoolsAsync();
                 foreach (var allWallet in AllWallets)
