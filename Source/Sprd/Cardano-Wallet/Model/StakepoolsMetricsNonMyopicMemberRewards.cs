@@ -29,6 +29,8 @@ namespace IO.Swagger.Model
     [DataContract]
         public partial class StakepoolsMetricsNonMyopicMemberRewards :  IEquatable<StakepoolsMetricsNonMyopicMemberRewards>, IValidatableObject
     {
+
+        public StakepoolsMetricsNonMyopicMemberRewards(){}
         /// <summary>
         /// Defines Unit
         /// </summary>

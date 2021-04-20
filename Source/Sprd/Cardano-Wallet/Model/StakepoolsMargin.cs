@@ -29,6 +29,7 @@ namespace IO.Swagger.Model
     [DataContract]
         public partial class StakepoolsMargin :  IEquatable<StakepoolsMargin>, IValidatableObject
     {
+         public StakepoolsMargin(){}
         /// <summary>
         /// Defines Unit
         /// </summary>

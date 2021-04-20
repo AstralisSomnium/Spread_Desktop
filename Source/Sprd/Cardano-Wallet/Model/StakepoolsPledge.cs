@@ -29,6 +29,7 @@ namespace IO.Swagger.Model
     [DataContract]
         public partial class StakepoolsPledge :  IEquatable<StakepoolsPledge>, IValidatableObject
     {
+         public StakepoolsPledge(){}
         /// <summary>
         /// Defines Unit
         /// </summary>

@@ -29,6 +29,8 @@ namespace IO.Swagger.Model
     [DataContract]
         public partial class StakepoolsMetrics :  IEquatable<StakepoolsMetrics>, IValidatableObject
     {
+
+        public StakepoolsMetrics(){}
         /// <summary>
         /// Initializes a new instance of the <see cref="StakepoolsMetrics" /> class.
         /// </summary>

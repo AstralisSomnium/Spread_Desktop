@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,14 +7,11 @@ using System.Linq;
 using System.Net.Mail;
 using System.Reactive;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using MessageBox.Avalonia.Enums;
-using Newtonsoft.Json;
 using ReactiveUI;
 using Serilog;
 using SprdCore.Cardano;
@@ -60,7 +56,7 @@ namespace Sprd.UI.ViewModels
         {
             get
             {
-                return new ObservableCollection<SprdPoolInfo>(_lastComittedAdaPools.OrderBy(o => o._id));
+                return new ObservableCollection<SprdPoolInfo>(_lastComittedAdaPools.OrderBy(o => o.timestamp));
             }
             set
             {
@@ -114,7 +110,7 @@ namespace Sprd.UI.ViewModels
             get
             {
                 return new DataGridCollectionView(AllStakePools.Where(p =>
-                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance < 0.5 || p.SprdStakeBlockChance < 0.5)));
+                    p.LifeTimeBlocks == 0 && p.ActiveBlockChance < 1));
             }
         }
 
@@ -123,7 +119,7 @@ namespace Sprd.UI.ViewModels
             get
             {
                 return new DataGridCollectionView(AllStakePools.Where(p =>
-                    p.LifeTimeBlocks == 0 && (p.ActiveBlockChance >= 0.5 || p.SprdStakeBlockChance >= 0.5) && p.ActiveBlockChance < 1));
+                    p.LifeTimeBlocks != 0 && p.ActiveBlockChance < 1));
             }
         }
 
@@ -205,12 +201,12 @@ namespace Sprd.UI.ViewModels
             {
                 Log.Verbose("CanExecuteDeleteSprd");
 
-                var canExecuteSprd = SprdSelection.Wallet?.CurrentSprdPool?.pool_id == string.Empty || 
-                                     SprdSelection.Wallet?.CurrentSprdPool?.wallet_id == null ||
-                                     SprdSelection.Wallet?.CurrentSprdPool?._id == null;
+                var canExecuteSprd = SprdSelection.Wallet?.CurrentSprdPool?.pool_id != string.Empty &&
+                                     SprdSelection.Wallet?.CurrentSprdPool?.wallet_id != null &&
+                                     SprdSelection.Wallet?.CurrentSprdPool?._id != null;
                 Log.Verbose("CanExecuteDeleteSprd " + canExecuteSprd);
 
-                return !canExecuteSprd;
+                return canExecuteSprd;
             }
         }
 
@@ -244,7 +240,16 @@ namespace Sprd.UI.ViewModels
                         "Deleted succesfully your SPRD for the pool {0}{1}We hope you will support another pool with your ADA!",
                         sprdInfo.pool_id, Environment.NewLine), ButtonEnum.Ok, Icon.Info);
                 var msgBoxResultSuccess = await msgBoxSuccess.ShowDialog(_desktopMainWindow);
+
                 SprdSelection.Wallet.CurrentSprdPool = null;
+                var toRemove = _lastComittedAdaPools.FirstOrDefault(p =>
+                    p.timestamp == sprdInfo.timestamp && p.pool_id == SprdSelection.Pool.Name &&
+                    p.commited_ada == sprdInfo.commited_ada);
+                if (toRemove != null)
+                {
+                    _lastComittedAdaPools.Remove(toRemove);
+                    OnPropertyChanged("LastComittedAdaPools");
+                }
             }
             catch (Exception e)
             {
@@ -262,7 +267,7 @@ namespace Sprd.UI.ViewModels
             try
             {
                 Log.Verbose("Clicked button: SpreadAda");
-                if (CanExecuteSprd)
+                if (!CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
                         "Data is missing:{0}Select a pool, wallet, insert a valid email address, wait for a updated Stake Pool list and try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
@@ -288,6 +293,11 @@ namespace Sprd.UI.ViewModels
                         "Thanks for supporting the pool {0}{1}You will get notified when enough other delegators SPRD there ADA to this pool in order to be ready to mine a block!",
                         SprdSelection.Pool.Name, Environment.NewLine), ButtonEnum.Ok, Icon.Info);
                 var msgBoxResultSuccess = await msgBoxSuccess.ShowDialog(_desktopMainWindow);
+                sprdInfo.wallet_id = SprdSelection.Wallet.Name;
+                sprdInfo.pool_id = SprdSelection.Pool.Name;
+                SprdSelection.Wallet.CurrentSprdPool = sprdInfo;
+                _lastComittedAdaPools.Add(sprdInfo);
+                OnPropertyChanged("LastComittedAdaPools");
             }
             catch (Exception e)
             {
@@ -335,7 +345,7 @@ namespace Sprd.UI.ViewModels
             }
             catch (Exception e)
             {
-                var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Daedalus not running", string.Format("{0}{1}Do you want start Daedalus automatically now? SPRD requires Daedalus to be run.", e.Message, Environment.NewLine), ButtonEnum.YesNo, Icon.Stop);
+                var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Daedalus not running", string.Format("{0}{1}Do you want start Daedalus automatically now? Daedalus to be running and synchronized.{2}SPRD will exit, restart again when Daedalus is ready!", e.Message, Environment.NewLine, Environment.NewLine), ButtonEnum.YesNo, Icon.Stop);
                 var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
                 if (msgBoxResult == ButtonResult.No) 
                 {

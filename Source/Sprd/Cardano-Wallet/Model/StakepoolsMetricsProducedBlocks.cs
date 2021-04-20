@@ -29,6 +29,7 @@ namespace IO.Swagger.Model
     [DataContract]
         public partial class StakepoolsMetricsProducedBlocks :  IEquatable<StakepoolsMetricsProducedBlocks>, IValidatableObject
     {
+        public StakepoolsMetricsProducedBlocks(){}
         /// <summary>
         /// Defines Unit
         /// </summary>
