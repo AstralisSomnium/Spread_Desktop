@@ -270,7 +270,7 @@ namespace Sprd.UI.ViewModels
                 if (!CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
-                        "Data is missing:{0}Select a pool, wallet, insert a valid email address, wait for a updated Stake Pool list and try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
+                        "Data is missing:{0}Select a pool, wallet, insertstart a valid email address, wait for a updated Stake Pool list and try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
                     
                     Log.Warning(warnMessage);
                     var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Error);
@@ -347,14 +347,15 @@ namespace Sprd.UI.ViewModels
             {
                 var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Daedalus not running", string.Format("{0}{1}Do you want start Daedalus automatically now? Daedalus to be running and synchronized.{2}SPRD will exit, restart again when Daedalus is ready!", e.Message, Environment.NewLine, Environment.NewLine), ButtonEnum.YesNo, Icon.Stop);
                 var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
-                if (msgBoxResult == ButtonResult.No) 
+                if (msgBoxResult == ButtonResult.Yes)
                 {
-                    _desktopMainWindow.Close();
-                    Environment.Exit(0);
-                    return false;
+                    _cardanoServer.StartDaedalus();
                 }
-                _cardanoServer.StartDaedalus();
-                WalletApiProcess = _cardanoServer.ConnectToDaedalus(_sprdSettings.WalletSettings);
+
+                _desktopMainWindow.Close();
+                Environment.Exit(0);
+                return false;
+                //WalletApiProcess = _cardanoServer.ConnectToDaedalus(_sprdSettings.WalletSettings);
             }
 
             try
