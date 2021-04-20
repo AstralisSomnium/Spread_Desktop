@@ -43,8 +43,8 @@ https://daedaluswallet.io/en/download/)_
 ### Installation
 
 Gettings started:
-1. Verified all the software requirments above
-2. Go to the "Release" page on Github
+1. Verify all the software requirments above
+2. Go to the [Release](https://github.com/AstralisSomnium/Spread_Desktop/releases) page on Github
 3. Download under `Assets` the file named "SPRD_Beta.zip"
 4. [Unblock](https://www.tenforums.com/tutorials/5357-unblock-file-windows-10-a.html) and unzip to any directory
 
@@ -52,7 +52,7 @@ Gettings started:
 #### Start SPRD
 
 1. Start [Daedalus](
-https://daedaluswallet.io/en/download/)_ and wait until its synced
+https://daedaluswallet.io/en/download/) and wait until its synced
 1. Execute `Sprd.UI.exe`
    1. If Daedalus is not running then it will fail, because SPRD will start the `wallet-api` and connects to the running cardano full node of Daedalus. This is required to prevent scaming by verify the wallet balance.
 
