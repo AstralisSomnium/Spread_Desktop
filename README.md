@@ -20,13 +20,6 @@ Overview of the SPRD software:
 1. Ensures delegators rewards
    1. If the desired pool owns too low ADA for mining a block then the software collects all  “committed” delegators. When enough delegators are found then all of them are notified in order to make the delegation happen!
 
-
-## No release so far!
-
-At the moment we are working on the first release and now its nothing to download so far!
-
-The first software will be released during april, be exicted and click `WATCH` to this Github Repository on the right up corner. See you! 
-
 # Requirements
 
 This page includes useful information on the supported Operating Systems as well that are needed to install and use SPRD.
@@ -46,6 +39,22 @@ Supported:
   + _Download from [offical source](
 https://daedaluswallet.io/en/download/)_
   + _But no major version change is supported!_
+
+### Installation
+
+Gettings started:
+1. Verified all the software requirments above
+2. Go to the "Release" page on Github
+3. Download under `Assets` the file named "SPRD_Beta.zip"
+4. [Unblock](https://www.tenforums.com/tutorials/5357-unblock-file-windows-10-a.html) and unzip to any directory
+
+
+#### Start SPRD
+
+1. Start [Daedalus](
+https://daedaluswallet.io/en/download/)_ and wait until its synced
+1. Execute `Sprd.UI.exe`
+   1. If Daedalus is not running then it will fail, because SPRD will start the `wallet-api` and connects to the running cardano full node of Daedalus. This is required to prevent scaming by verify the wallet balance.
 
 ### Logging
 
