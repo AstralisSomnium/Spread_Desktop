@@ -47,7 +47,7 @@ namespace SprdCore.Cardano
             PoolRegistered = DateTime.MinValue; // ToDo
         }
 
-        public StakePoolApiResponse Base { get; internal set; }
+        public StakePoolApiResponse Base { get; set; }
         public string Ticker { get;  set; }
         public string Name { get;  set; }
         public int? LifeTimeBlocks { get;  set; }

@@ -99,7 +99,7 @@
 
       <Grid Grid.Row="0">
 
-        <TabControl Margin="7">
+        <TabControl Margin="5, 5, 5,0">
 
           <TabItem>
             <TabItem.Header>
@@ -124,7 +124,7 @@
                 <TextBlock Text="{Binding BlockChainCache.CacheDate}" FontWeight="Bold" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </StackPanel>
 
-              <Expander Grid.Row="1" Margin="10" IsExpanded="{Binding SprdSelection.Pool.Base, Converter={x:Static ObjectConverters.IsNull}, Mode=OneWay}">
+              <Expander Grid.Row="1" Margin="10" IsExpanded="{Binding SprdSelection.Pool.Base, Converter={x:Static ObjectConverters.IsNotNull}, Mode=OneWay}">
                 <Expander.Header>
                   <DockPanel VerticalAlignment="Stretch">
                     <TextBlock FontStyle="Italic" Foreground="Green">SPRD to Pool</TextBlock>
@@ -167,7 +167,7 @@
                 </Grid>
               </Expander>
 
-              <TabControl Grid.Row="2" IsVisible="{Binding !!AllStakePools.Count }">
+              <TabControl Margin="10,0" Grid.Row="2" IsVisible="{Binding !!AllStakePools.Count }">
 
                 <TabItem>
                   <TabItem.Header>
@@ -176,7 +176,7 @@
                       <TextBlock Text="{Binding AllZeroStakePools.Count, StringFormat=0 Blocks (\{0\})}" Foreground="Red"/>
                     </StackPanel>
                   </TabItem.Header>
-                  <DataGrid Items="{Binding AllZeroStakePools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" >
+                  <DataGrid Items="{Binding AllZeroStakePools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" ToolTip.Tip="Pools never produced a block" >
                     <DataGrid.Columns>
                       <DataGridTextColumn Binding="{Binding Ticker}"
                                           Header="Ticker"/>
@@ -203,10 +203,10 @@
                   <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                       <Image Source="/Assets/iconfinder_game_of_thrones_game_thrones_series_element_fire_flame_heat_4527379.png" />
-                      <TextBlock Text="{Binding AlmostFundedPools.Count, StringFormat=Almost funded (\{0\})}" Foreground="Red" />
+                      <TextBlock Text="{Binding AlmostFundedPools.Count, StringFormat=Not producing anymore (\{0\})}" Foreground="Red" />
                     </StackPanel>
                   </TabItem.Header>
-                  <DataGrid Items="{Binding AlmostFundedPools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" >
+                  <DataGrid Items="{Binding AlmostFundedPools}" SelectedItem="{Binding Path=SprdSelection.Pool, Mode=TwoWay}" ToolTip.Tip="Pools produced a block but now not anymore">
                     <DataGrid.Columns>
                       <DataGridTextColumn Binding="{Binding Ticker}"
                                           Header="Ticker"/>
@@ -327,13 +327,13 @@
                 <Button Grid.Row="1" Grid.Column="8" Content="Remove SPRD commitment" Command="{Binding DeleteCurrentSprd}" IsDefault="True" />
               </Grid>
 
-              <TextBlock Grid.Row="2" Text="{Binding LastComittedAdaPools.Count, StringFormat=All committed ADA with SPRD (\{0\})}" FontSize="17" Margin="24, 15,0,5" />
+              <TextBlock Grid.Row="2" Text="{Binding LastComittedAdaPools.Count, StringFormat=All committed ADA with SPRD (\{0\}), Mode=TwoWay}" FontSize="17" Margin="24, 15,0,5" />
 
-              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools}">
+              <DataGrid Grid.Row="3" MinHeight="50" Margin="20, 10, 20,0" Items="{Binding LastComittedAdaPools, Mode=OneWay}">
                 <DataGrid.Columns>
                   <DataGridTextColumn Binding="{Binding pool_id}"
                                       Header="Name"/>
-                  <DataGridTextColumn Binding="{Binding commited_ada, StringFormat=\{0:N0\} ₳}"
+                  <DataGridTextColumn Binding="{Binding commited_ada, StringFormat=\{0:N0\} ₳, Mode=OneWay}"
                                       Header="Comitted ADA" />
                   <DataGridTextColumn Binding="{Binding timestamp}"
                                       Header="Timestamp" />

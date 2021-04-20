@@ -72,7 +72,6 @@ namespace Sprd.UI.Views
             }
         }
 
-
         void OpenLogs_FromMenu(object? sender, RoutedEventArgs e)
          {
              var logPath = Path.Join(Path.GetTempPath(), "SPRD");
