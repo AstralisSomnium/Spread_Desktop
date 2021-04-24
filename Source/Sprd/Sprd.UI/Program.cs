@@ -1,7 +1,5 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
-using System;
-using Serilog;
 
 namespace Sprd.UI
 {
@@ -12,11 +10,11 @@ namespace Sprd.UI
         // yet and stuff might break.
         public static void Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.AppSettings().CreateLogger();
-
-            Log.Information("Starting SPRD...");
-            
+            // Log.Logger = new LoggerConfiguration()
+            //     .ReadFrom.AppSettings().CreateLogger();
+            //
+            // Log.Information("Starting SPRD...");
+            //
             //Log.CloseAndFlush();
 
             BuildAvaloniaApp()

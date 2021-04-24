@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
-using Serilog;
 using SprdCore.SPRD;
 
 namespace SprdCore.Cardano

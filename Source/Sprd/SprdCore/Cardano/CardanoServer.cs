@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Newtonsoft.Json;
-using Serilog;
 
 namespace SprdCore.Cardano
 {

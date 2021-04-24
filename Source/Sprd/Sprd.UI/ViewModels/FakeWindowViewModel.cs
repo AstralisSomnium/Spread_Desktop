@@ -1,21 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Avalonia.Collections;
-using Avalonia.Controls;
-using DynamicData;
-using IO.Swagger.Api;
 using IO.Swagger.Model;
-using ReactiveUI;
-using Serilog;
 using Sprd.UI.ViewModels;
-using SprdCore;
 using SprdCore.Cardano;
 using SprdCore.SPRD;
 

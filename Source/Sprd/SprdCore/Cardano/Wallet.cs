@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using IO.Swagger.Model;
-using Serilog;
 using SprdCore.SPRD;
 
 namespace SprdCore.Cardano
@@ -93,5 +92,40 @@ namespace SprdCore.Cardano
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class Log
+    {
+        public static void Information(string callingDispose)
+        {
+        }
+
+        public class Logger
+        {
+            public static void Fatal(string message)
+            {
+            }
+        }
+
+        public static void Verbose(string canexecutesprd)
+        {
+        }
+
+        public static void Warning(string warnMessage)
+        {
+        }
+        public static void Error(string warnMessage)
+        {
+        }
+
+        public static void Verbose(string executewalletcommand, string command)
+        {}
+
+        public static void Information(string foundInDaedalusWallets, int listWalletsCount)
+        {
+        }
+
+        public static void Warning(string timeoutHappenedTryingAgain, int retryCounter, int maxRetries)
+        {}
     }
 }

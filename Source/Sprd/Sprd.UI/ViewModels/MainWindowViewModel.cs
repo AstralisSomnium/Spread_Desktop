@@ -13,7 +13,6 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using MessageBox.Avalonia.Enums;
 using ReactiveUI;
-using Serilog;
 using SprdCore.Cardano;
 using SprdCore.SPRD;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -431,6 +430,31 @@ namespace Sprd.UI.ViewModels
 
             _cardanoServer.Dispose();
             _walletClient.Dispose();
+        }
+    }
+
+    public class Log
+    {
+        public static void Information(string callingDispose)
+        {
+        }
+
+        public class Logger
+        {
+            public static void Fatal(string message)
+            {
+}
+            }
+
+        public static void Verbose(string canexecutesprd)
+        {
+        }
+
+        public static void Warning(string warnMessage)
+        {
+        }
+        public static void Error(string warnMessage)
+        {
         }
     }
 }

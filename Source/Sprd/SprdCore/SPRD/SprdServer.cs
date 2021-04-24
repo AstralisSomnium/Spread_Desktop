@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
-using Serilog;
+using SprdCore.Cardano;
 
 namespace SprdCore.SPRD
 {

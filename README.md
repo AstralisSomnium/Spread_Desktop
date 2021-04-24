@@ -69,6 +69,17 @@ We want to make it as easy as possible for SPRD users to become SPRD contributor
 
 We use [Microsoft .Net Core](https://dotnet.microsoft.com/download) with UI of [AvaloniUI](https://avaloniaui.net/)
 
+#### Build
+
+[Windows portable](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#windows-rids)
+`dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime win-x64 --configuration Release --output bin\windows`
+
+[Linux-x64](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#linux-rids) _(Most desktop distributions like CentOS, Debian, Fedora, Ubuntu, and derivatives)_
+`dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime linux-x64 --configuration Release --output bin\Linux-x64`
+
+[osx-x64](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#macos-rids) (Minimum OS version is macOS 10.12 Sierra)
+`dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime osx-x64  --configuration Release --output bin\osx-x64`
+
 
 #### Cardano API
 
