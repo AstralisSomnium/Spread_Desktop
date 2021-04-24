@@ -19,7 +19,7 @@ namespace SprdCore.Cardano
             Base = apiResponse;
 
             Name = apiResponse.Name;
-            BalanceAda = ((int) apiResponse.Balance.Available.Quantity) / BlochChainInfo.LovelaceToAda;
+            BalanceAda = ((long) apiResponse.Balance.Available.Quantity) / BlochChainInfo.LovelaceToAda;
 
             var sprdPoolInfosForThisWallet = sprdPoolInfos.Where(p => p.wallet_id == apiResponse.Id).ToList();
             if (sprdPoolInfosForThisWallet.Any())

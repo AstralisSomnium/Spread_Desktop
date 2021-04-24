@@ -2,7 +2,7 @@
 {
     public static class BlochChainInfo
     {
-        public static int LovelaceToAda = 1000000;
+        public static long LovelaceToAda = 1000000;
         public static long TotalSupplyAda = 32100000000; // Updated 19.04.2021 from AdaPools.org  ToDo: should be replaced with cardano-db-sync
         public static long TotalStakedAda = 22710000000; // Updated 19.04.2021 from AdaPools.org  ToDo: should be replaced with cardano-db-sync
         public static double DecentralacationFactor = 0.02; // Updated 19.04.2021 from AdaPools.org  ToDo: should be replaced with cardano-db-sync

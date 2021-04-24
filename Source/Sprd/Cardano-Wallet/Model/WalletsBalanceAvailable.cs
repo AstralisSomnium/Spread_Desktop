@@ -76,7 +76,7 @@ namespace IO.Swagger.Model
         /// Gets or Sets Quantity
         /// </summary>
         [DataMember(Name="quantity", EmitDefaultValue=false)]
-        public int? Quantity { get; set; }
+        public long? Quantity { get; set; }
 
 
         /// <summary>
