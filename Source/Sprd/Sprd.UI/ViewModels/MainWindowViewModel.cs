@@ -396,7 +396,7 @@ namespace Sprd.UI.ViewModels
             {
                 if (e.Message.Contains("The operation has timed out."))
                 {
-                    Log.Warning("Timeout happened, try to restart servers");
+                    Log.Warning("Timeout happened, try to restart servers...");
                     Dispose();
                     var started = await StartServerAsync();
                     if (started)
