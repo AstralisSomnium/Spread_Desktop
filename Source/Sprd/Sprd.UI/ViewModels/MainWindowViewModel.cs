@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -372,25 +373,11 @@ namespace Sprd.UI.ViewModels
                 SprdSelection.Wallet = AllWallets.First();
 
                 var allPools = await _walletClient.GetAllPoolsAsync();
-
-                BlockChainCache = new BlockChainCache();
-                BlockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
-                ResolvePoolIds(BlockChainCache.StakePools);
-                OnPropertyChanged("StakePools");
+                AllStakePools = new ObservableCollection<StakePool>(allPools);
                 OnPropertyChanged("ShowCaching");
 
-                BlockChainCache.CacheDate = DateTime.Now;
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                };
-                byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(BlockChainCache, options);
-                await File.WriteAllBytesAsync(_stakePoolListDatabase, jsonUtf8Bytes);
-                AllStakePools = new ObservableCollection<StakePool>(allPools);
-
-                if (BlockChainCache.StakePools.Any())
-                    BlockChainCache.StakePools.Clear();
-                OnPropertyChanged("BlockChainCache");
+                ResolvePoolIds(AllStakePools);
+                await WriteCache(allPools);
             }
             catch (Exception e)
             {
@@ -408,6 +395,32 @@ namespace Sprd.UI.ViewModels
             }
 
             return true;
+        }
+
+        async Task WriteCache(List<StakePool> allPools)
+        {
+            BlockChainCache = new BlockChainCache
+            {
+                StakePools = new ObservableCollection<StakePool>(allPools), 
+                CacheDate = DateTime.Now
+            };
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            byte[] jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(BlockChainCache, options);
+
+
+            if (BlockChainCache.StakePools.Any())
+                BlockChainCache.StakePools.Clear();
+            OnPropertyChanged("BlockChainCache");
+
+            if (!_stakePoolListDatabase.HasWritePermissionOnDir())
+                throw new Exception(string.Format(
+                    "Failed caching to local system. Software can still be used but without caching it results in slower performance. {0}No write permission for: {1}",
+                    Environment.NewLine, _stakePoolListDatabase));
+            await File.WriteAllBytesAsync(_stakePoolListDatabase, jsonUtf8Bytes);
         }
 
         public Process WalletApiProcess { get; set; }
