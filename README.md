@@ -80,6 +80,24 @@ We use [Microsoft .Net Core](https://dotnet.microsoft.com/download) with UI of [
 [osx-x64](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#macos-rids) (Minimum OS version is macOS 10.12 Sierra)
 `dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime osx-x64  --configuration Release --output bin\osx-x64`
 
+The whole script in powershell
+
+```PowerShell
+Remove-Item "bin" -Recurse -Force
+
+$SPRDVERSION= "1.0.3"
+
+dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime win-x64 --configuration Release --output bin\win-x64 /p:Version=$SPRDVERSION /p:FileVersion=$SPRDVERSION /p:AssemblyVersion=$SPRDVERSION
+
+dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime linux-x64 --configuration Release --output bin\linux-x64 /p:Version=$SPRDVERSION /p:FileVersion=$SPRDVERSION /p:AssemblyVersion=$SPRDVERSION
+
+dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime osx-x64  --configuration Release --output bin\osx-x64 /p:Version=$SPRDVERSION /p:FileVersion=$SPRDVERSION /p:AssemblyVersion=$SPRDVERSION
+
+Compress-Archive -Path "bin\win-x64" -DestinationPath "bin\SPRD_$($SPRDVERSION)_win-x64.zip"
+Compress-Archive -Path "bin\linux-x64" -DestinationPath "bin\SPRD_$($SPRDVERSION)_linux-x64.zip"
+Compress-Archive -Path "bin\osx-x64" -DestinationPath "bin\SPRD_$($SPRDVERSION)_osx-x64.zip"
+```
+
 
 #### Cardano API
 
