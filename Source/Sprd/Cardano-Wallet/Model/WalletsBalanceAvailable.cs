@@ -50,7 +50,7 @@ namespace IO.Swagger.Model
         /// </summary>
         /// <param name="quantity">quantity (required).</param>
         /// <param name="unit">unit (required).</param>
-        public WalletsBalanceAvailable(int? quantity = default(int?), UnitEnum unit = default(UnitEnum))
+        public WalletsBalanceAvailable(long? quantity = default(long?), UnitEnum unit = default(UnitEnum))
         {
             // to ensure "quantity" is required (not null)
             if (quantity == null)
