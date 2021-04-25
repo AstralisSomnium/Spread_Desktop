@@ -14,7 +14,7 @@
         MinHeight="400"
         x:Class="Sprd.UI.Views.MainWindow"
         Icon="/Assets/Sprd_Logo.ico"
-        Title="SPRD for CARDANO: Every pool mintes soon a block"
+        Title="SPRD for CARDANO: Every pool mints soon a block"
         >
   <Window.Styles>
     <Styles>
