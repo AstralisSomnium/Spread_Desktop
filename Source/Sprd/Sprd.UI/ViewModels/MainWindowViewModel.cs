@@ -30,7 +30,7 @@ namespace Sprd.UI.ViewModels
         readonly Window _desktopMainWindow;
         private readonly SprdSettings _sprdSettings;
 
-        readonly string _stakePoolListDatabase = System.IO.Path.Join(System.IO.Path.GetTempPath(), "SPRD\\SPRD_StakePoolList_Cache.json");
+        readonly string _stakePoolListDatabase = System.IO.Path.Join(System.IO.Path.GetTempPath(), string.Format("SPRD{0}SPRD_StakePoolList_Cache.json", Path.DirectorySeparatorChar));
         
         readonly SprdServer _sprdServer;
         readonly CardanoServer _cardanoServer;
@@ -269,7 +269,7 @@ namespace Sprd.UI.ViewModels
                 if (!CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
-                        "Data is missing:{0}Select a pool, wallet, insertstart a valid email address, wait for a updated Stake Pool list and try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
+                        "Data is missing:{0}Select a pool, wallet and insert a valid email address. Also, wait for a updated Stake Pool list and then try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
                     
                     Log.Warning(warnMessage);
                     var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Error);
@@ -289,7 +289,7 @@ namespace Sprd.UI.ViewModels
                 var response = await _sprdServer.AddNewPoolInfoAsync(sprdInfo);
                 var msgBoxSuccess = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Sucessful spread",
                     string.Format(
-                        "Thanks for supporting the pool {0}{1}You will get notified when enough other delegators SPRD there ADA to this pool in order to be ready to mine a block!",
+                        "Thanks for supporting the pool {0}{1}You will get notified when enough other delegators SPRD there ADA to this pool in order to be ready to mint a block!",
                         SprdSelection.Pool.Name, Environment.NewLine), ButtonEnum.Ok, Icon.Info);
                 var msgBoxResultSuccess = await msgBoxSuccess.ShowDialog(_desktopMainWindow);
                 sprdInfo.wallet_id = SprdSelection.Wallet.Name;
@@ -376,6 +376,8 @@ namespace Sprd.UI.ViewModels
                 BlockChainCache = new BlockChainCache();
                 BlockChainCache.StakePools = new ObservableCollection<StakePool>(allPools);
                 ResolvePoolIds(BlockChainCache.StakePools);
+                OnPropertyChanged("StakePools");
+                OnPropertyChanged("ShowCaching");
 
                 BlockChainCache.CacheDate = DateTime.Now;
                 var options = new JsonSerializerOptions
