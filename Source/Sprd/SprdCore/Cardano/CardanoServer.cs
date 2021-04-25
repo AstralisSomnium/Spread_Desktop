@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace SprdCore.Cardano
 {
@@ -20,7 +21,7 @@ namespace SprdCore.Cardano
     {
         public Process StartDaedalus()
         {
-            Log.Verbose("Starting Daedalus now...");
+            Logging.Logger.LogInformation("Starting Daedalus now...");
             var daedalusExePath = GetDaedalusExePath();
             var process = Process.Start(daedalusExePath.FullName);
             
@@ -29,30 +30,30 @@ namespace SprdCore.Cardano
 
         FileInfo GetDaedalusExePath()
         {
-            Log.Verbose("Searching Daedalus installation...");
+            Logging.Logger.LogInformation("Searching Daedalus installation...");
             var DaedalusExePath = new FileInfo(string.Format("{0}cardano-launcher.exe", DaedalusInstallPath));
             if (DaedalusExePath.Exists)
                 return DaedalusExePath;
             
             var errorMsg = string.Format("Not found Daedalus installation: {0} ", DaedalusExePath.FullName);
-            Log.Error(errorMsg);
+            Logging.Logger.LogError(errorMsg);
             throw new Exception(errorMsg);
         }
 
         public Process ConnectToDaedalus(WalletSettings walletSettings)
         {
-            Log.Verbose(string.Format("ConnectToDaedalus port {0}", walletSettings.Port));
+            Logging.Logger.LogInformation(string.Format("ConnectToDaedalus port {0}", walletSettings.Port));
             var currentProcesses = Process.GetProcesses();
             var daedalusProcesses = currentProcesses.Where(p => p.ProcessName.StartsWith("Daedalus")).ToList();
             if (daedalusProcesses.Any())
-                Log.Verbose("Daedalus is already running");
+                Logging.Logger.LogInformation("Daedalus is already running");
             else
             {
                 var errorMessage = "Failed to connect to Daedalus node! Could not find the running application";
-                Log.Error(errorMessage);
+                Logging.Logger.LogError(errorMessage);
                 throw new Exception(errorMessage);
             }
-            Log.Verbose("Starting wallet server...");
+            Logging.Logger.LogInformation("Starting wallet server...");
 
             Process mainDaedalusProcess;
             if (daedalusProcesses.Count() == 1)

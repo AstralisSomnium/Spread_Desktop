@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
+using Microsoft.Extensions.Logging;
 using SprdCore.Cardano;
 
 namespace SprdCore.SPRD
@@ -37,12 +38,12 @@ namespace SprdCore.SPRD
             RelativeUrlAddPoolSprd = "/add_pool_commitment";
             RelativeUrlDeletePoolSprd = "/del_pool_commit";
 
-            Log.Verbose(string.Format("SPRD BaseUrl {0}", BaseUrl));
+            Logging.Logger.LogInformation(string.Format("SPRD BaseUrl {0}", BaseUrl));
         }
 
         public async Task<IEnumerable<SprdPoolInfo>> GetPoolInformationsAsync()
         {
-            Log.Verbose("GetPoolInformationsAsync");
+            Logging.Logger.LogInformation("GetPoolInformationsAsync");
             
             var response = (await BaseUrl.AppendPathSegment(RelativeUrlQueryPool).SetQueryParam("code", AzureCode_QueryPools_TestEnvironment).GetJsonAsync<IEnumerable<SprdPoolInfo>>());
 
@@ -51,23 +52,23 @@ namespace SprdCore.SPRD
         // https://spread-api.azurewebsites.net/api/del_pool_commit/{id}?code=W/D8J7d4Q1SHIVI65umLfF3xG8aVhOXOcp3OaKkiaIv9spL/kN2KFg==
         public async Task<IFlurlResponse> AddNewPoolInfoAsync(SprdPoolInfo sprdPoolInfo)
         {
-            Log.Verbose("AddNewPoolInfo");
+            Logging.Logger.LogInformation("AddNewPoolInfo");
 
             var response = (await BaseUrl.AppendPathSegment(RelativeUrlAddPoolSprd)
                 .SetQueryParam("code", AzureCode_AddSprd_TestEnvironment).PostJsonAsync(sprdPoolInfo));
 
-            Log.Verbose("Response received from AddNewPoolInfo");
+            Logging.Logger.LogInformation("Response received from AddNewPoolInfo");
             return response;
         }
 
         public async Task<IFlurlResponse> DeletePoolInfoAsync(SprdPoolInfo sprdPoolInfo)
         {
-            Log.Verbose("DeletePoolInfoAsync");
+            Logging.Logger.LogInformation("DeletePoolInfoAsync");
 
             var response = (await BaseUrl.AppendPathSegments(RelativeUrlDeletePoolSprd, sprdPoolInfo._id)
                 .SetQueryParam("code", AzureCode_DeleteSprd_TestEnvironment).DeleteAsync());
 
-            Log.Verbose("Response received from DeletePoolInfoAsync");
+            Logging.Logger.LogInformation("Response received from DeletePoolInfoAsync");
             return response;
         }
     }

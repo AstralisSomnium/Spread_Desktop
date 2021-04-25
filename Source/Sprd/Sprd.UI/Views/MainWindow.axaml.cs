@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using SprdCore;
 
 namespace Sprd.UI.Views
 {
@@ -70,8 +71,7 @@ namespace Sprd.UI.Views
 
         void OpenLogs_FromMenu(object? sender, RoutedEventArgs e)
          {
-             var logPath = Path.Join(Path.GetTempPath(), "SPRD");
-             Process.Start("explorer.exe", logPath);
+             Process.Start("explorer.exe", Logging.LogFile.Directory.FullName);
          }
     }
 }

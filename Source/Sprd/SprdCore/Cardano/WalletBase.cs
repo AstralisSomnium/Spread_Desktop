@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace SprdCore.Cardano
 {
@@ -13,7 +14,7 @@ namespace SprdCore.Cardano
 
         protected Process ExecuteWalletCommand(string command)
         {
-            Log.Verbose("ExecuteWalletCommand: '{0}'", command);
+            Logging.Logger.LogInformation("ExecuteWalletCommand: '{0}'", command);
 
             var walletExe = "cardano-wallet.exe";
             var daedaelusWalletFile = new FileInfo(string.Format(@"{0}{1}", DaedalusInstallPath, walletExe));
@@ -21,7 +22,7 @@ namespace SprdCore.Cardano
             var walletProcess = currentProcesses.Where(p => p.ProcessName == Path.GetFileNameWithoutExtension(daedaelusWalletFile.Name)).ToList();
             if (walletProcess.Count > 1) // one time started by Daedalus and one time started by SPRD in INSECURE mode. 
             {
-                Log.Verbose("Cardano-wallet.exe is already running");
+                Logging.Logger.LogInformation("Cardano-wallet.exe is already running");
                 return walletProcess.First();
             }
             return ExecuteCommand(daedaelusWalletFile, command);

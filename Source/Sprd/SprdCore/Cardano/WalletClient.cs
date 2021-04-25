@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
+using Microsoft.Extensions.Logging;
 using SprdCore.SPRD;
 
 namespace SprdCore.Cardano
@@ -21,10 +22,10 @@ namespace SprdCore.Cardano
 
         async Task<IEnumerable<SprdPoolInfo>> GetSprdPoolInfos()
         {
-            Log.Verbose("GetSprdPoolInfos");
+            Logging.Logger.LogInformation("GetSprdPoolInfos");
 
             var sprdPoolInfos = await _sprdServer.GetPoolInformationsAsync();
-            Log.Information("Found in SPRD database {0} in total", sprdPoolInfos.Count());
+            Logging.Logger.LogInformation("Found in SPRD database {0} in total", sprdPoolInfos.Count());
             return sprdPoolInfos;
         }
 
@@ -44,7 +45,7 @@ namespace SprdCore.Cardano
                 {
                     if (!e.Message.Contains("The operation has timed out."))
                         throw;
-                    Log.Warning("Timeout happened, trying again {0}/{1}", retryCounter, maxRetries);
+                    Logging.Logger.LogWarning("Timeout happened, trying again {0}/{1}", retryCounter, maxRetries);
                 }
                 retryCounter++;
             } while (retryCounter >= maxRetries);
@@ -57,14 +58,14 @@ namespace SprdCore.Cardano
         public async Task<List<StakePool>> GetAllPoolsAsync()
         {
             var basePath = string.Format("http://localhost:{0}/v2", _port);
-            Log.Verbose("Sending request for list all stake pools..");
+            Logging.Logger.LogInformation("Sending request for list all stake pools..");
 
             var alListStakePools = await ApiCallRetry<StakePoolApiResponse>(async delegate
             {
                 var stakePoolApi = new StakePoolsApi(basePath);
                 return await stakePoolApi.ListStakePoolsAsync(0);
             });
-            Log.Information("Found {0} stake pools", alListStakePools.Count);
+            Logging.Logger.LogInformation("Found {0} stake pools", alListStakePools.Count);
 
             var sprdPoolInfos = await GetSprdPoolInfos();
 
@@ -77,11 +78,11 @@ namespace SprdCore.Cardano
         public async Task<IEnumerable<Wallet>> GetAllWalletsAsync()
         {
             var basePath = string.Format("http://localhost:{0}/v2", _port);
-            Log.Verbose("Sending request for list all wallets ...");
+            Logging.Logger.LogInformation("Sending request for list all wallets ...");
 
             var walletsApi = new WalletsApi(basePath);
             var listWallets = await walletsApi.ListWalletsAsync();
-            Log.Information("Found in Daedalus {0} wallets", listWallets.Count);
+            Logging.Logger.LogInformation("Found in Daedalus {0} wallets", listWallets.Count);
 
             var sprdPoolInfos = await GetSprdPoolInfos();
 

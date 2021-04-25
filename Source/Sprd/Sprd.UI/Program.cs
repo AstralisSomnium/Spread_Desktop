@@ -1,5 +1,7 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
+using Microsoft.Extensions.Logging;
+using SprdCore;
 
 namespace Sprd.UI
 {
@@ -10,15 +12,10 @@ namespace Sprd.UI
         // yet and stuff might break.
         public static void Main(string[] args)
         {
-            // Log.Logger = new LoggerConfiguration()
-            //     .ReadFrom.AppSettings().CreateLogger();
-            //
-            // Log.Information("Starting SPRD...");
-            //
-            //Log.CloseAndFlush();
-
             BuildAvaloniaApp()
                 .StartWithClassicDesktopLifetime(args);
+
+            Logging.Logger.LogDebug("Called BuildAvaloniaApp");
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.

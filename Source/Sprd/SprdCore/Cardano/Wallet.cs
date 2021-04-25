@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using IO.Swagger.Model;
+using Microsoft.Extensions.Logging;
 using SprdCore.SPRD;
 
 namespace SprdCore.Cardano
@@ -23,7 +24,7 @@ namespace SprdCore.Cardano
             var sprdPoolInfosForThisWallet = sprdPoolInfos.Where(p => p.wallet_id == apiResponse.Id).ToList();
             if (sprdPoolInfosForThisWallet.Any())
             {
-                Log.Information("Found already a comitted SPRD for this wallet " + Name);
+                Logging.Logger.LogInformation("Found already a comitted SPRD for this wallet " + Name);
                 CurrentSprdPool = sprdPoolInfosForThisWallet.First();
                 CurrentSprdPool.wallet_id = Name;
             }
@@ -92,40 +93,5 @@ namespace SprdCore.Cardano
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class Log
-    {
-        public static void Information(string callingDispose)
-        {
-        }
-
-        public class Logger
-        {
-            public static void Fatal(string message)
-            {
-            }
-        }
-
-        public static void Verbose(string canexecutesprd)
-        {
-        }
-
-        public static void Warning(string warnMessage)
-        {
-        }
-        public static void Error(string warnMessage)
-        {
-        }
-
-        public static void Verbose(string executewalletcommand, string command)
-        {}
-
-        public static void Information(string foundInDaedalusWallets, int listWalletsCount)
-        {
-        }
-
-        public static void Warning(string timeoutHappenedTryingAgain, int retryCounter, int maxRetries)
-        {}
     }
 }

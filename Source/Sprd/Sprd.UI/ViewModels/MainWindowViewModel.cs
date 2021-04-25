@@ -13,7 +13,9 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using MessageBox.Avalonia.Enums;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
+using SprdCore;
 using SprdCore.Cardano;
 using SprdCore.SPRD;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -173,14 +175,14 @@ namespace Sprd.UI.ViewModels
         {
             get
             {
-                Log.Verbose("CanExecuteSprd");
+                Logging.Logger.LogInformation("CanExecuteSprd");
                 try
                 {
                     var email = new MailAddress(SprdSelection.NotifyEmail);
                 }
                 catch (Exception e)
                 {
-                    Log.Error("CanExecuteSprd false " + e.Message);
+                    Logging.Logger.LogError("CanExecuteSprd false " + e.Message);
                     return false;
                 }
 
@@ -190,7 +192,7 @@ namespace Sprd.UI.ViewModels
                                      SprdSelection.Pool?.Name != string.Empty &&
                                      SprdSelection.Pool?.Name != "<Select Pool>" &&
                                      SprdSelection.Pool?.Base != null;
-                Log.Verbose("CanExecuteSprd " + canExecuteSprd);
+                Logging.Logger.LogInformation("CanExecuteSprd " + canExecuteSprd);
                 return canExecuteSprd;
             }
         }
@@ -199,12 +201,12 @@ namespace Sprd.UI.ViewModels
         {
             get
             {
-                Log.Verbose("CanExecuteDeleteSprd");
+                Logging.Logger.LogInformation("CanExecuteDeleteSprd");
 
                 var canExecuteSprd = SprdSelection.Wallet?.CurrentSprdPool?.pool_id != string.Empty &&
                                      SprdSelection.Wallet?.CurrentSprdPool?.wallet_id != null &&
                                      SprdSelection.Wallet?.CurrentSprdPool?._id != null;
-                Log.Verbose("CanExecuteDeleteSprd " + canExecuteSprd);
+                Logging.Logger.LogInformation("CanExecuteDeleteSprd " + canExecuteSprd);
 
                 return canExecuteSprd;
             }
@@ -214,13 +216,13 @@ namespace Sprd.UI.ViewModels
         {
             try
             {
-                Log.Verbose("Clicked button: DeleteCurrentSprd");
+                Logging.Logger.LogInformation("Clicked button: DeleteCurrentSprd");
                 if (!CanExecuteDeleteSprd)
                 {
                     var warnMessage = string.Format(
                         "Your wallet has no commitments in the SPRD database therefore cannot delete it. {0}If the problem persists contact support@sprd-pool.org", Environment.NewLine);
 
-                    Log.Warning(warnMessage);
+                    Logging.Logger.LogWarning(warnMessage);
                     var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Error);
                     var msgBoxResult = msgBox.ShowDialog(_desktopMainWindow);
                     return;
@@ -258,7 +260,7 @@ namespace Sprd.UI.ViewModels
                         "While sending your deletion of SPRD to the server following error occurred: {0}{1}If the problem persists contact support@sprd-pool.org",
                         e.Message, Environment.NewLine), ButtonEnum.Ok, Icon.Error);
                 var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
-                Log.Logger.Fatal(e.Message);
+                Logging.Logger.LogCritical(e.Message);
             }
         }
 
@@ -266,13 +268,13 @@ namespace Sprd.UI.ViewModels
         {
             try
             {
-                Log.Verbose("Clicked button: SpreadAda");
+                Logging.Logger.LogInformation("Clicked button: SpreadAda");
                 if (!CanExecuteSprd)
                 {
                     var warnMessage = string.Format(
                         "Data is missing:{0}Select a pool, wallet and insert a valid email address. Also, wait for a updated Stake Pool list and then try again.{1}If the problem persists contact support@sprd-pool.org", Environment.NewLine, Environment.NewLine);
                     
-                    Log.Warning(warnMessage);
+                    Logging.Logger.LogWarning(warnMessage);
                     var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("SPRD: Missing data", warnMessage, ButtonEnum.Ok, Icon.Error);
                     var msgBoxResult = msgBox.ShowDialog(_desktopMainWindow);
                     return;
@@ -306,7 +308,7 @@ namespace Sprd.UI.ViewModels
                         "While sending your SPRD to the server following error occurred: {0}{1}If the problem persists contact support@sprd-pool.org",
                         e.Message, Environment.NewLine), ButtonEnum.Ok, Icon.Error);
                 var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
-                Log.Logger.Fatal(e.Message);
+                Logging.Logger.LogCritical(e.Message);
             }
         }
 
@@ -383,7 +385,7 @@ namespace Sprd.UI.ViewModels
             {
                 if (e.Message.Contains("The operation has timed out."))
                 {
-                    Log.Warning("Timeout happened, try to restart servers...");
+                    Logging.Logger.LogWarning("Timeout happened, try to restart servers...");
                     Dispose();
                     var started = await StartServerAsync();
                     if (started)
@@ -429,7 +431,7 @@ namespace Sprd.UI.ViewModels
         {
             var msgBox = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow(title, string.Format("{0}{1}If the problem persists contact support@sprd-pool.org", message, Environment.NewLine), ButtonEnum.Ok, Icon.Error);
             var msgBoxResult = await msgBox.ShowDialog(_desktopMainWindow);
-            Log.Logger.Fatal(message);
+            Logging.Logger.LogCritical(message);
             return msgBoxResult;
         }
 
@@ -441,35 +443,10 @@ namespace Sprd.UI.ViewModels
 
         public void Dispose()
         {
-            Log.Information("Calling Dispose");
+            Logging.Logger.LogInformation("Calling Dispose");
 
             _cardanoServer.Dispose();
             _walletClient.Dispose();
-        }
-    }
-
-    public class Log
-    {
-        public static void Information(string callingDispose)
-        {
-        }
-
-        public class Logger
-        {
-            public static void Fatal(string message)
-            {
-}
-            }
-
-        public static void Verbose(string canexecutesprd)
-        {
-        }
-
-        public static void Warning(string warnMessage)
-        {
-        }
-        public static void Error(string warnMessage)
-        {
         }
     }
 }
