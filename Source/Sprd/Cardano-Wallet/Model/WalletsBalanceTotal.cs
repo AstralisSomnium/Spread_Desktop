@@ -50,7 +50,7 @@ namespace IO.Swagger.Model
         /// </summary>
         /// <param name="quantity">quantity (required).</param>
         /// <param name="unit">unit (required).</param>
-        public WalletsBalanceTotal(int? quantity = default(int?), UnitEnum unit = default(UnitEnum))
+        public WalletsBalanceTotal(long? quantity = default(long?), UnitEnum unit = default(UnitEnum))
         {
             // to ensure "quantity" is required (not null)
             if (quantity == null)
@@ -76,7 +76,7 @@ namespace IO.Swagger.Model
         /// Gets or Sets Quantity
         /// </summary>
         [DataMember(Name="quantity", EmitDefaultValue=false)]
-        public int? Quantity { get; set; }
+        public long? Quantity { get; set; }
 
 
         /// <summary>

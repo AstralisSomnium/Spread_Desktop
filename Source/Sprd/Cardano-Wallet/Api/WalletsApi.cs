@@ -10,10 +10,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using RestSharp;
 using IO.Swagger.Client;
 using IO.Swagger.Model;
+using Newtonsoft.Json;
+using RestSharp.Deserializers;
 
 namespace IO.Swagger.Api
 {
@@ -939,8 +942,78 @@ namespace IO.Swagger.Api
                 if (exception != null) throw exception;
             }
 
+#if DEBUG
+            var walletApiFakeJson = @"
+[
+    {
+        ""passphrase"": { ""last_updated_at"": ""2021 - 02 - 08T23: 38:41.2753974Z"" },
+        ""address_pool_gap"": 20,
+        ""state"": { ""status"": ""ready"" },
+        ""balance"": {
+          ""reward"": { ""quantity"": 60712, ""unit"": ""lovelace"" },
+          ""total"": { ""quantity"": 30713430, ""unit"": ""lovelace"" },
+          ""available"": { ""quantity"": 30652718, ""unit"": ""lovelace"" }
+        },
+        ""name"": ""Patrick"",
+        ""delegation"": {
+          ""next"": [],
+          ""active"": {
+            ""status"": ""delegating"",
+            ""target"": ""pool1ypjd5wznrkknyuf4ahvcqqcr9nh6qkwyerzsc2cygrrr6md3kqv""
+          }
+        },
+        ""id"": ""56937f747411000317a32a185dfe16011d63371d"",
+        ""tip"": {
+          ""height"": { ""quantity"": 5637017, ""unit"": ""block"" },
+          ""time"": ""2021 - 04 - 25T16: 55:50Z"",
+          ""epoch_number"": 261,
+          ""absolute_slot_number"": 27803459,
+          ""slot_number"": 414659
+        },
+        ""assets"": { ""total"": [], ""available"": [] }
+      },
+      {
+        ""passphrase"": { ""last_updated_at"": ""2021 - 02 - 08T23: 38:41.2753974Z"" },
+        ""address_pool_gap"": 20,
+        ""state"": { ""status"": ""ready"" },
+        ""balance"": {
+          ""reward"": { ""quantity"": 60712, ""unit"": ""lovelace"" },
+          ""total"": { ""quantity"": 25729984413, ""unit"": ""lovelace"" },
+          ""available"": { ""quantity"": 25729984413, ""unit"": ""lovelace"" }
+        },
+        ""name"": ""Issue #21"",
+        ""delegation"": {
+          ""next"": [],
+          ""active"": {
+            ""status"": ""delegating"",
+            ""target"": ""pool1ypjd5wznrkknyuf4ahvcqqcr9nh6qkwyerzsc2cygrrr6md3kqv""
+          }
+        },
+        ""id"": ""00007f747411000317a32a185dfe16011d63371d"",
+        ""tip"": {
+          ""height"": { ""quantity"": 5637017, ""unit"": ""block"" },
+          ""time"": ""2021 - 04 - 25T16: 55:50Z"",
+          ""epoch_number"": 261,
+          ""absolute_slot_number"": 27803459,
+          ""slot_number"": 414659
+        },
+        ""assets"": { ""total"": [], ""available"": [] }
+      }
+]
+
+";
+
+                JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+        {
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+        };
+        var fakeWallets = (List < InlineResponse200 > )JsonConvert.DeserializeObject(walletApiFakeJson, typeof(List<InlineResponse200>), serializerSettings);
+#endif
+
+            
             return new ApiResponse<List<InlineResponse200>>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => string.Join(",", x.Value)),
+                //fakeWallets);
                 (List<InlineResponse200>) this.Configuration.ApiClient.Deserialize(localVarResponse, typeof(List<InlineResponse200>)));
         }
 
