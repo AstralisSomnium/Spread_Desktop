@@ -59,7 +59,6 @@ https://daedaluswallet.io/en/download/) and wait until its synced
 ### Logging
 
 + Default log location: `%TEMP%\SPRD\sprd-{Date}.log`
-+ Configuration file `Sprd.UI.dll.config`
 
 ## Open source software to collaborate on code
 
