@@ -14,7 +14,7 @@
         MinHeight="400"
         x:Class="Sprd.UI.Views.MainWindow"
         Icon="/Assets/Sprd_Logo.ico"
-        Title="SPRD for CARDANO: Every pool mines soon a block"
+        Title="SPRD for CARDANO: Every pool mintes soon a block"
         >
   <Window.Styles>
     <Styles>
@@ -116,7 +116,7 @@
               </Grid.RowDefinitions>
 
               <Grid Grid.Row="0" IsVisible="{Binding ShowCaching }">
-                <TextBlock Text="Fetching Stake Pools from servers (about 100mb).. can take few minutes. Be patient, be fair!" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="Fetching Stake Pools from server (about 100mb).. can take few minutes. Be patient, be fair!" FontWeight="Bold" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
               </Grid>
 
               <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="0" IsVisible="{Binding !!BlockChainCache.StakePools.Count }">
