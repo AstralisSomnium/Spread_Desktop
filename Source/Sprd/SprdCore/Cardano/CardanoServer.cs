@@ -23,9 +23,7 @@ namespace SprdCore.Cardano
             Log.Verbose("Starting Daedalus now...");
             var daedalusExePath = GetDaedalusExePath();
             var process = Process.Start(daedalusExePath.FullName);
-
-            var timeout = 25 * 1000;
-            Thread.Sleep(timeout);
+            
             return process;
         }
 
