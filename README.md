@@ -72,7 +72,7 @@ We use [Microsoft .Net Core](https://dotnet.microsoft.com/download) with UI of [
 #### Build
 
 [Windows portable](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#windows-rids)
-`dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime win-x64 --configuration Release --output bin\windows`
+`dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime win-x64 --configuration Release --output bin\win-x64`
 
 [Linux-x64](https://docs.microsoft.com/en-us/dotnet/core/rid-catalog#linux-rids) _(Most desktop distributions like CentOS, Debian, Fedora, Ubuntu, and derivatives)_
 `dotnet build .\Source\Sprd\Sprd.UI\Sprd.UI.csproj --runtime linux-x64 --configuration Release --output bin\Linux-x64`
