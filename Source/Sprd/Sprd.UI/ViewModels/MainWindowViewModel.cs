@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reactive;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -33,7 +34,8 @@ namespace Sprd.UI.ViewModels
         readonly Window _desktopMainWindow;
         private readonly SprdSettings _sprdSettings;
 
-        readonly string _stakePoolListDatabase = System.IO.Path.Join(System.IO.Path.GetTempPath(), string.Format("SPRD{0}SPRD_StakePoolList_Cache.json", Path.DirectorySeparatorChar));
+        readonly string _stakePoolListDatabase = System.IO.Path.Join(new FileInfo(Process.GetCurrentProcess().MainModule.FileName).Directory.FullName,
+            "SPRD_StakePoolList_Cache.json");
         
         readonly SprdServer _sprdServer;
         readonly CardanoServer _cardanoServer;

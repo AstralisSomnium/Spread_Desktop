@@ -58,6 +58,7 @@ https://daedaluswallet.io/en/download/) and wait until its synced
 
 ### Logging
 
+It uses [nreco](https://github.com/nreco/logging) logging:
 + Default log location: `%TEMP%\SPRD\sprd-{Date}.log`
 
 ## Open source software to collaborate on code

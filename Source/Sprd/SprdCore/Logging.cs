@@ -15,8 +15,7 @@ namespace SprdCore
             var directory = Path.Join(Path.GetTempPath(), "SPRD");
             LogFile = new FileInfo(Path.Join(directory,
                 string.Format("sprd-{0}.log", DateTime.Now.ToString("yyyy-MM-dd"))));
-
-
+            
             var loggerSettings = new FileLoggerOptions()
             {
                 FileSizeLimitBytes = 1024 * 8,

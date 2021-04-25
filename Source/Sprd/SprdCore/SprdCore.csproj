@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Cardano-Wallet\IO.Swagger.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SPRD_StakePoolList_Cache.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
